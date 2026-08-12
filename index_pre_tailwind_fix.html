@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Tiempo como Entidad Ontológica · Luis Amin Velasco Cobos</title>
+  <meta name="description" content="¿El tiempo existe o lo inventamos? Una investigación filosófica de Luis Amin Velasco Cobos sobre la naturaleza del tiempo. Disponible en físico y digital según tu país." />
+  <link rel="icon" type="image/jpeg" href="img/portada.jpeg" />
+  <link rel="apple-touch-icon" href="img/portada.jpeg" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VQ2XYTVYJZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VQ2XYTVYJZ');
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '824486448991877');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=824486448991877&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Book",
+    "name": "El tiempo como entidad ontológica",
+    "alternateName": "Una investigación filosófica sobre la naturaleza del tiempo",
+    "author": { "@type": "Person", "name": "Luis Amin Velasco Cobos" },
+    "publisher": { "@type": "Organization", "name": "Universo de Letras" },
+    "isbn": "9791387717483",
+    "inLanguage": "es",
+    "image": "img/portada.jpeg",
+    "description": "Un ensayo filosófico que propone al tiempo como una entidad ontológica en sí misma, tendiendo puentes entre la física moderna y la filosofía para repensar una de las grandes preguntas de la existencia.",
+    "genre": ["Filosofía", "Metafísica"],
+    "offers": [
+      { "@type": "Offer", "url": "https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232", "availability": "https://schema.org/InStock", "areaServed": "CO" },
+      { "@type": "Offer", "url": "https://www.mercadolibre.com.co/el-tiempo-como-entidad-ontol243gica-libro-original/up/MCOU4008025326", "availability": "https://schema.org/InStock", "areaServed": "CO" },
+      { "@type": "Offer", "url": "https://www.casadellibro.com.co/ebook-el-tiempo-como-entidad-ontologica-ebook/9791387716752/18223277", "availability": "https://schema.org/InStock", "areaServed": "CO" },
+      { "@type": "Offer", "url": "https://libros.cc/El-tiempo-como-entidad-ontologica.htm?isbn=9791387717483", "availability": "https://schema.org/InStock", "areaServed": "ES" },
+      { "@type": "Offer", "url": "https://www.agapea.com/Luis-Amin-Velasco-Cobos/El-tiempo-como-entidad-ontologica-9791387717483-i.htm", "availability": "https://schema.org/InStock", "areaServed": "ES" },
+      { "@type": "Offer", "url": "https://www.gandhi.com.mx/el-tiempo-como-entidad-ontologica-9791387716752/p", "availability": "https://schema.org/InStock", "areaServed": "MX" },
+      { "@type": "Offer", "url": "https://www.buscalibre.com.mx/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232", "availability": "https://schema.org/InStock", "areaServed": "MX" },
+      { "@type": "Offer", "url": "https://www.buscalibre.com.ar/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232", "availability": "https://schema.org/InStock", "areaServed": "AR" },
+      { "@type": "Offer", "url": "https://www.kobo.com/ar/es/ebook/el-tiempo-como-entidad-ontologica", "availability": "https://schema.org/InStock", "areaServed": "AR" },
+      { "@type": "Offer", "url": "https://www.amazon.com/-/es/Luis-Amin-Velasco-Cobos/dp/B0GZ7R363W", "availability": "https://schema.org/InStock" },
+      { "@type": "Offer", "url": "https://play.google.com/store/books/details/Luis_Amin_Velasco_Cobos_El_tiempo_como_entidad_ont?id=MhXbEQAAQBAJ&hl=es_CO", "availability": "https://schema.org/InStock" }
+    ]
+  }
+  </script>
+
+  <!-- Fonts: Syne (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            navy:  { DEFAULT: '#0E0B16', 800: '#171128', 600: '#241C3D' },
+            gold:  { DEFAULT: '#E8A33D', light: '#F5C983', dark: '#C7822A' },
+            teal:  { DEFAULT: '#2E7C99', light: '#5FA8C4', faint: '#EAF3F6' },
+            cream: { DEFAULT: '#F7F3EA' },
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* ────────────────────────────────────────────
+       DESIGN TOKENS — El Tiempo como Entidad Ontológica
+    ──────────────────────────────────────────── */
+    :root {
+      --navy:   #0E0B16;
+      --gold:   #E8A33D;
+      --gold-l: #F5C983;
+      --teal:   #2E7C99;
+      --teal-l: #5FA8C4;
+      --cream:  #F7F3EA;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-display { font-family: 'Syne', sans-serif; }
+    .text-gold    { color: var(--gold); }
+    .bg-navy      { background-color: var(--navy); }
+    .bg-cream     { background-color: var(--cream); }
+
+    .gradient-cta      { background: linear-gradient(135deg, #E8A33D 0%, #F5C983 100%); }
+    .gradient-whatsapp { background: linear-gradient(135deg, #2E7C99 0%, #5FA8C4 100%); }
+
+    [x-cloak] { display: none !important; }
+
+    /* ── Sección 1: apertura oscura + preguntas ── */
+    .apertura {
+      background:
+        radial-gradient(900px 600px at 50% 12%, rgba(232,163,61,0.10), transparent 60%),
+        radial-gradient(700px 500px at 50% 100%, rgba(46,124,153,0.14), transparent 60%),
+        linear-gradient(180deg, #0E0B16 0%, #171128 55%, #0E0B16 100%);
+      color: #fff;
+    }
+    .q-lead {
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.42);
+      margin-bottom: 0.75rem;
+    }
+    .q-main {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      line-height: 1.12;
+      color: #fff;
+      font-size: clamp(1.9rem, 6vw, 3.4rem);
+    }
+    .q-dots {
+      color: rgba(232,163,61,0.55);
+      letter-spacing: 0.5em;
+      font-size: 0.9rem;
+      padding-left: 0.5em;
+    }
+    .scroll-hint {
+      animation: bob 1.8s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+    /* ── Revelado progresivo al hacer scroll ── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── Portada / autor ── */
+    .product-img {
+      max-height: 520px;
+      object-fit: contain;
+      border-radius: 1.25rem;
+      filter: drop-shadow(0 24px 52px rgba(232,163,61,.30));
+    }
+    .author-img { box-shadow: 0 24px 56px rgba(232,163,61,.28); border: 6px solid #fff; }
+
+    .logo-mark {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: radial-gradient(circle at 50% 45%, #F5C983 0%, #E8A33D 35%, #2E7C99 75%, #0E0B16 100%);
+    }
+
+    .divider-gold {
+      width: 64px; height: 3px; border-radius: 999px; margin: 0 auto 1.5rem;
+      background: linear-gradient(90deg, var(--gold), var(--gold-l));
+    }
+
+    @keyframes cta-glow {
+      0%, 100% { box-shadow: 0 4px 20px rgba(232,163,61,0.40); }
+      50%       { box-shadow: 0 4px 44px rgba(232,163,61,0.70); }
+    }
+    .cta-pulse { animation: cta-glow 2.2s ease infinite; }
+
+    /* ── Reseñas ── */
+    .review-card {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(232,163,61,0.08);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .review-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(232,163,61,0.15); }
+    .format-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: rgba(46,124,153,0.08); border: 1px solid rgba(46,124,153,0.25);
+      border-radius: 999px; padding: 0.3rem 0.8rem; font-size: 0.75rem; font-weight: 600; color: var(--teal);
+    }
+    .tab-active   { border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 600; }
+    .tab-inactive { color: #71717a; font-weight: 500; }
+    .tab-inactive:hover { color: #3f3f46; }
+
+    /* ── FAQ ── */
+    details summary { list-style: none; cursor: pointer; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary .icon-chevron { transform: rotate(180deg); }
+    .icon-chevron { transition: transform .25s ease; }
+
+    /* ── Sección país + tiendas ── */
+    .pais-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.35rem; padding: 1.1rem 0.75rem; border-radius: 1rem;
+      background: #fff; border: 1.5px solid #EBEAEA; cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      font-weight: 600; color: var(--navy);
+    }
+    .pais-btn:hover { transform: translateY(-3px); border-color: rgba(232,163,61,0.45); box-shadow: 0 10px 26px rgba(232,163,61,0.14); }
+    .pais-btn .bandera { font-size: 1.9rem; line-height: 1; }
+
+    .platform-card {
+      background: #fff; border: 1px solid #EBEAEA; border-radius: 1rem; padding: 1.1rem 1.25rem;
+      display: flex; align-items: center; gap: 0.9rem;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .platform-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(232,163,61,0.14); border-color: rgba(232,163,61,0.35); }
+    .platform-logo { width: 76px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-start; }
+    .platform-logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+    .format-pill {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; white-space: nowrap;
+    }
+    .format-pill--fisico  { background: rgba(46,124,153,0.10); color: var(--teal); }
+    .format-pill--digital { background: rgba(232,163,61,0.14); color: var(--gold-dark, #C7822A); }
+    .format-pill--ambos   { background: linear-gradient(90deg, rgba(46,124,153,0.10) 50%, rgba(232,163,61,0.14) 50%); color: var(--navy); }
+
+    /* ── Sticky CTA ── */
+    #sticky-cta { transform: translateY(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+    #sticky-cta.visible { transform: translateY(0); }
+
+    /* ── Modales legales ── */
+    .legal-overlay { background: rgba(14,11,22,0.60); backdrop-filter: blur(4px); }
+    .legal-panel { background: #fff; border-radius: 1.25rem; box-shadow: 0 24px 72px rgba(14,11,22,0.28); max-height: 88vh; display: flex; flex-direction: column; }
+    .legal-body { overflow-y: auto; flex: 1; }
+    .legal-body::-webkit-scrollbar { width: 4px; }
+    .legal-body::-webkit-scrollbar-thumb { background: rgba(232,163,61,0.35); border-radius: 4px; }
+    .legal-section { border-left: 3px solid var(--gold); padding-left: 1rem; margin-bottom: 1.5rem; }
+    .legal-section-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(232,163,61,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .legal-tag { display: inline-block; background: rgba(232,163,61,0.10); color: var(--gold-dark, #C7822A); border: 1px solid rgba(232,163,61,0.25); border-radius: 999px; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.6rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    .social-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); transition: background .2s ease; }
+    .social-btn:hover { background: var(--gold); }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 1 · APERTURA (pantalla limpia)
+     Preguntas que se revelan al hacer scroll. Sin menú,
+     sin portada, sin autor, sin video: solo curiosidad.
+═══════════════════════════════════════════════ -->
+<section class="apertura">
+  <!-- Primera pantalla -->
+  <div class="min-h-screen flex flex-col items-center justify-center text-center px-6">
+    <p class="q-main max-w-3xl">¿El tiempo existe…<br>o lo inventamos?</p>
+    <div class="scroll-hint mt-16 flex flex-col items-center gap-2" style="color:rgba(255,255,255,0.4);">
+      <span class="text-xs tracking-widest uppercase">Sigue bajando</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <!-- Descenso de preguntas -->
+  <div class="max-w-3xl mx-auto px-6 pb-24 space-y-32 sm:space-y-40">
+    <div class="reveal text-center">
+      <p class="q-lead">Si existe…</p>
+      <p class="q-main">¿Dónde está?</p>
+    </div>
+
+    <div class="reveal text-center">
+      <p class="q-lead">Si está ahí…</p>
+      <p class="q-main">¿Por qué nadie puede decir exactamente qué es?</p>
+    </div>
+
+    <div class="reveal text-center">
+      <p class="q-lead">Y si nadie puede decir qué es…</p>
+      <p class="q-main">¿Por qué organizamos toda nuestra vida alrededor de él?</p>
+    </div>
+
+    <div class="reveal text-center">
+      <p class="q-lead">Pero… ¿y si es un invento?</p>
+      <p class="q-main">¿Por qué todos vivimos como si fuera real?</p>
+    </div>
+
+    <div class="reveal text-center">
+      <p class="q-main">¿Por qué envejecemos?</p>
+      <p class="q-dots block mt-6">· · ·</p>
+    </div>
+
+    <div class="reveal text-center">
+      <p class="q-main">¿Por qué todo cambia?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 2 · EL LIBRO APARECE
+     Primera y única aparición de la portada.
+═══════════════════════════════════════════════ -->
+<section id="libro" class="py-20 sm:py-28 bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
+    <p class="reveal font-display text-2xl sm:text-3xl mb-3" style="color:var(--navy);">
+      Yo también me hice esas preguntas.
+    </p>
+    <p class="reveal text-lg sm:text-xl mb-10" style="color:rgba(14,11,22,0.6);">
+      Este libro es el resultado.
+    </p>
+
+    <img src="img/portada.jpeg"
+      alt="Portada del libro El Tiempo como Entidad Ontológica, de Luis Amin Velasco Cobos"
+      class="product-img w-full max-w-xs sm:max-w-sm mb-10 reveal" />
+
+    <a href="#consigue" data-cta="comprar_libro" data-cta-location="libro_aparece"
+      class="reveal inline-block gradient-cta text-white font-bold text-base px-10 py-4 rounded-xl cta-pulse hover:opacity-90 transition-opacity">
+      Quiero descubrir la respuesta
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 3 · RESEÑAS (cargadas desde reviews.json)
+═══════════════════════════════════════════════ -->
+<section id="resenas" class="py-16 sm:py-20" style="background:var(--cream);"
+  x-data="reviewsWidget()" x-init="load()">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <div class="divider-gold"></div>
+      <h2 class="font-display text-3xl sm:text-4xl mb-3" style="color:var(--navy);">Lo que dicen los <span class="text-gold">lectores</span></h2>
+      <p class="max-w-lg mx-auto text-sm" style="color:rgba(14,11,22,0.55);">
+        Reseñas reales publicadas en las plataformas de venta.
+      </p>
+      <p class="text-xs mt-2" style="color:rgba(14,11,22,0.4);" x-show="updatedAt" x-cloak>
+        Última actualización: <span x-text="updatedAt"></span>
+      </p>
+    </div>
+
+    <!-- Promedio -->
+    <div class="flex items-center justify-center gap-3 mb-10" x-show="reviews.length" x-cloak>
+      <span class="font-display text-3xl" style="color:var(--navy);" x-text="average.toFixed(1)"></span>
+      <div class="flex flex-col">
+        <div class="flex gap-0.5" x-html="starsHtml(Math.round(average))"></div>
+        <span class="text-xs" style="color:rgba(14,11,22,0.5);" x-text="reviews.length + ' reseña' + (reviews.length===1?'':'s') + ' en total'"></span>
+      </div>
+    </div>
+
+    <!-- Filtro por plataforma -->
+    <div class="flex flex-wrap justify-center gap-2 mb-8" x-show="reviews.length" x-cloak>
+      <button type="button" @click="filter='todas'"
+        :class="filter==='todas' ? 'tab-active' : 'tab-inactive'"
+        class="text-xs px-3 py-1.5 rounded-full border border-amber-200">Todas</button>
+      <template x-for="p in platforms" :key="p">
+        <button type="button" @click="filter=p"
+          :class="filter===p ? 'tab-active' : 'tab-inactive'"
+          class="text-xs px-3 py-1.5 rounded-full border border-amber-200 capitalize" x-text="p"></button>
+      </template>
+    </div>
+
+    <!-- Grid de reseñas -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" x-show="reviews.length" x-cloak>
+      <template x-for="r in filteredReviews" :key="r.author + r.date">
+        <div class="review-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex gap-0.5" x-html="starsHtml(r.rating)"></div>
+            <span class="format-badge !text-[10px]" x-text="r.platformLabel"></span>
+          </div>
+          <p class="text-sm leading-relaxed mb-3" style="color:rgba(14,11,22,0.72);" x-text="r.text"></p>
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold" style="color:var(--navy);" x-text="r.author"></p>
+            <p class="text-xs" style="color:rgba(14,11,22,0.4);" x-text="r.date"></p>
+          </div>
+          <a :href="r.sourceUrl" target="_blank" rel="noopener nofollow" x-show="r.sourceUrl" x-cloak
+            class="inline-flex items-center gap-1 text-xs font-semibold" style="color:var(--teal);">
+            Ver reseña original ↗
+          </a>
+        </div>
+      </template>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="text-center py-10 rounded-2xl bg-white" x-show="!reviews.length" x-cloak>
+      <p class="text-sm" style="color:rgba(14,11,22,0.55);">
+        Aún no hay reseñas publicadas en esta sección.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 4 · PREGUNTAS FRECUENTES
+═══════════════════════════════════════════════ -->
+<section class="py-16 bg-white">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <div class="divider-gold"></div>
+      <h2 class="font-display text-2xl sm:text-3xl" style="color:var(--navy);">Preguntas frecuentes</h2>
+    </div>
+
+    <div class="space-y-1">
+      <details class="group border-b border-amber-100 py-4">
+        <summary class="flex items-center justify-between text-sm font-semibold cursor-pointer" style="color:var(--navy);">
+          ¿Necesito saber filosofía?
+          <svg class="icon-chevron w-5 h-5 text-zinc-400 flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mt-3 text-sm text-zinc-600 leading-relaxed pr-8">
+          No. Solo tener curiosidad.
+        </div>
+      </details>
+
+      <details class="group border-b border-amber-100 py-4">
+        <summary class="flex items-center justify-between text-sm font-semibold cursor-pointer" style="color:var(--navy);">
+          ¿Es difícil de leer?
+          <svg class="icon-chevron w-5 h-5 text-zinc-400 flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mt-3 text-sm text-zinc-600 leading-relaxed pr-8">
+          No. Las ideas avanzan paso a paso.
+        </div>
+      </details>
+
+      <details class="group border-b border-amber-100 py-4">
+        <summary class="flex items-center justify-between text-sm font-semibold cursor-pointer" style="color:var(--navy);">
+          ¿Está disponible en eBook?
+          <svg class="icon-chevron w-5 h-5 text-zinc-400 flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mt-3 text-sm text-zinc-600 leading-relaxed pr-8">
+          Sí.
+        </div>
+      </details>
+
+      <details class="group py-4">
+        <summary class="flex items-center justify-between text-sm font-semibold cursor-pointer" style="color:var(--navy);">
+          ¿Dónde puedo conseguirlo?
+          <svg class="icon-chevron w-5 h-5 text-zinc-400 flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mt-3 text-sm text-zinc-600 leading-relaxed pr-8">
+          En diferentes librerías digitales y físicas según tu país.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECCIÓN 5 · CONSIGUE EL LIBRO (por país)
+     Lee ?pais=co|mx|es|ar de la URL. Si no viene,
+     muestra el selector "Elige tu país".
+═══════════════════════════════════════════════ -->
+<section id="consigue" class="py-16 sm:py-20" style="background:var(--cream);"
+  x-data="tiendas()" x-init="init()">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
+    <div class="divider-gold"></div>
+    <h2 class="font-display text-3xl sm:text-4xl mb-3" style="color:var(--navy);">Consigue el <span class="text-gold">libro</span></h2>
+    <p class="text-base mb-8 max-w-md mx-auto" style="color:rgba(14,11,22,0.6);">
+      Solo elige tu librería preferida. El proceso tarda solo unos minutos y se realiza de forma rápida y segura.
+    </p>
+
+    <!-- Selector de país -->
+    <div x-show="!pais">
+      <p class="text-sm font-bold uppercase tracking-widest mb-5" style="color:var(--gold-dark, #C7822A);">Elige tu país</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <template x-for="(datos, codigo) in paises" :key="codigo">
+          <button type="button" class="pais-btn" :data-pais="codigo" @click="elegir(codigo)">
+            <span class="bandera" x-text="datos.bandera"></span>
+            <span class="text-sm" x-text="datos.nombre"></span>
+          </button>
+        </template>
+      </div>
+    </div>
+
+    <!-- Tiendas del país elegido -->
+    <div x-show="pais" x-cloak>
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <span class="text-2xl" x-text="paisActual.bandera"></span>
+        <span class="font-display text-xl" style="color:var(--navy);" x-text="paisActual.nombre"></span>
+        <button type="button" @click="pais=''" class="text-xs font-semibold ml-2" style="color:var(--teal);">Cambiar país</button>
+      </div>
+
+      <div class="grid gap-4 text-left mb-6">
+        <template x-for="t in paisActual.tiendas" :key="t.nombre + t.formato">
+          <a :href="t.url" target="_blank" rel="noopener" class="platform-card"
+            :data-platform="t.nombre" :data-store="t.evento" :data-format="t.formato" :data-pais="pais">
+            <span class="platform-logo"><img :src="'img/logos/' + t.logo" :alt="t.nombre" loading="lazy"></span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <p class="font-semibold text-sm truncate" style="color:var(--navy);" x-text="t.nombre"></p>
+                <span class="format-pill"
+                  :class="t.formato==='digital' ? 'format-pill--digital' : (t.formato==='ambos' ? 'format-pill--ambos' : 'format-pill--fisico')"
+                  x-text="t.formato==='digital' ? '📱 Digital' : (t.formato==='ambos' ? '📘📱 Físico y Digital' : '📘 Físico')"></span>
+              </div>
+              <p class="text-xs" style="color:rgba(14,11,22,0.5);" x-text="t.desc"></p>
+            </div>
+            <span class="text-gold text-sm font-bold flex-shrink-0">↗</span>
+          </a>
+        </template>
+      </div>
+
+      <p class="text-xs" style="color:rgba(14,11,22,0.45);">
+        🔒 Compra directa y segura en la tienda oficial de cada plataforma.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer class="bg-navy border-t border-white/10 py-10">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+    <div class="flex items-center justify-center gap-2.5 mb-2">
+      <span class="logo-mark"></span>
+      <span class="font-display text-white text-lg sm:text-xl">Razón y <span class="text-gold">Sentido</span></span>
+    </div>
+    <p class="text-white/50 text-sm mt-1">Luis Amin Velasco Cobos · Autor de "El tiempo como entidad ontológica"</p>
+
+    <div class="flex items-center justify-center gap-3 mt-5">
+      <a href="https://razonysentido.com" target="_blank" rel="noopener" aria-label="Sitio web de Razón y Sentido" class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg>
+      </a>
+      <a href="https://facebook.com/razon.y.sentido.consultor" target="_blank" rel="noopener" aria-label="Facebook de Razón y Sentido" class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.16 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.51 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.45 2.91h-2.33V22c4.78-.78 8.44-4.94 8.44-9.94z"/></svg>
+      </a>
+      <a href="https://www.youtube.com/@Raz%C3%B3nysentido-b7s" target="_blank" rel="noopener" aria-label="YouTube de Razón y Sentido" class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.6 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/luis-velasco-0235a9329" target="_blank" rel="noopener" aria-label="LinkedIn de Luis Amin Velasco" class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.02-4.12 2.06 2.06 0 01-.02 4.12zM7.11 20.45H3.56V9h3.55v11.45z"/></svg>
+      </a>
+    </div>
+
+    <p class="text-white/35 text-xs mt-5 max-w-md mx-auto">
+      Esta página es un espacio de referencia editorial. Las compras se procesan directamente en las plataformas asociadas.
+    </p>
+    <div class="flex justify-center gap-5 mt-5 text-xs text-white/30">
+      <button onclick="openLegal('terminos')" class="hover:text-white/60 transition-colors">Términos</button>
+      <button onclick="openLegal('privacidad')" class="hover:text-white/60 transition-colors">Privacidad</button>
+      <a href="https://wa.me/573235109187" target="_blank" class="hover:text-white/60 transition-colors">Contacto</a>
+    </div>
+    <p class="text-white/15 text-xs mt-4">© <span id="footer-year"></span> Luis Amin Velasco Cobos · Todos los derechos reservados</p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     STICKY CTA (aparece tras el reveal del libro)
+═══════════════════════════════════════════════ -->
+<div id="sticky-cta"
+  class="fixed bottom-0 left-0 right-0 z-50 backdrop-blur border-t border-white/15 py-3 px-4" style="background:rgba(14,11,22,0.96);">
+  <div class="max-w-sm mx-auto flex items-center gap-3">
+    <div class="flex-1 min-w-0">
+      <p class="text-white text-xs font-semibold truncate">El Tiempo como Entidad Ontológica</p>
+      <p class="text-gold text-[10px]">Luis Amin Velasco Cobos</p>
+    </div>
+    <a href="#consigue" data-cta="comprar_libro" data-cta-location="sticky"
+      class="gradient-cta text-white text-xs font-bold px-5 py-2.5 rounded-xl whitespace-nowrap">
+      Consigue el libro
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════ -->
+<script>
+  /* ═══════════════════════════════════════════════════════════════════
+     MÓDULO DE ANALÍTICA — Meta Pixel + Google Analytics 4
+     Bloque ÚNICO y centralizado. Toda la medición del sitio vive aquí.
+     ═══════════════════════════════════════════════════════════════════ */
+  (function () {
+    'use strict';
+
+    // ── Datos base del libro ──
+    const LIBRO = {
+      isbn: '9791387717483',
+      nombre: 'El tiempo como entidad ontológica',
+      categoria: 'Filosofía / Metafísica',
+      autor: 'Luis Amin Velasco Cobos'
+    };
+
+    // ── device_type: móvil vs escritorio ──
+    function tipoDispositivo() {
+      return window.matchMedia('(max-width: 640px)').matches ? 'mobile' : 'desktop';
+    }
+
+    // ── Parámetros UTM (solo los presentes en la URL) ──
+    function paramsUTM() {
+      const q = new URLSearchParams(window.location.search);
+      const utm = {};
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+        const v = q.get(k);
+        if (v) utm[k] = v;
+      });
+      return utm;
+    }
+
+    // ── Parámetros COMUNES enviados en TODOS los eventos ──
+    function paramsComunes() {
+      return Object.assign({
+        page_location: window.location.href,
+        page_title: document.title,
+        content_name: LIBRO.nombre,
+        content_category: LIBRO.categoria,
+        content_ids: [LIBRO.isbn],
+        content_type: 'product',
+        currency: 'COP',
+        device_type: tipoDispositivo()
+      }, paramsUTM());
+    }
+
+    // ── Emisor unificado: envía el mismo evento a Meta y a GA4 ──
+    function emitir(metaEvent, metaTipo, gaEvent, extra) {
+      const datos = Object.assign(paramsComunes(), extra || {});
+      if (metaEvent && typeof fbq === 'function') fbq(metaTipo || 'trackCustom', metaEvent, datos);
+      if (gaEvent && typeof gtag === 'function') gtag('event', gaEvent, datos);
+    }
+
+    // ── Anti-duplicados: cada clave se dispara una sola vez por carga ──
+    const emitidos = new Set();
+    function unaVez(clave, cb) {
+      if (emitidos.has(clave)) return;
+      emitidos.add(clave);
+      cb();
+    }
+
+    // Retro-compatibilidad
+    window.trackMeta = function (e, p) { if (typeof fbq === 'function') fbq('track', e, Object.assign(paramsComunes(), p || {})); };
+    window.trackGA = function (e, p) { if (typeof gtag === 'function') gtag('event', e, Object.assign(paramsComunes(), p || {})); };
+
+    /* ───────── VISTA DE PÁGINA ─────────
+       PageView lo dispara Meta en el <head>. Complementamos con
+       ViewContent (Meta) y view_item (GA4). */
+    // Evento ViewContent / view_item — vista de la ficha del libro
+    emitir('ViewContent', 'track', 'view_item', {
+      items: [{ item_id: LIBRO.isbn, item_name: LIBRO.nombre, item_brand: LIBRO.autor, item_category: 'Libros', item_category2: LIBRO.categoria }]
+    });
+
+    /* ───────── MANEJADOR DELEGADO DE CLICS ─────────
+       Un solo listener cubre: tarjetas de plataforma (creadas
+       dinámicamente por país), botones de país y enlaces externos. */
+    document.addEventListener('click', function (e) {
+
+      // 1) Clic en una tarjeta de plataforma de compra
+      const card = e.target.closest('.platform-card');
+      if (card) {
+        const plataforma = card.dataset.platform || 'desconocida';
+        const formato = card.dataset.format || 'desconocido';
+        const pais = card.dataset.pais || 'na';
+        const evento = card.dataset.store || 'ClickPlataformaOtra';
+        const datos = { plataforma: plataforma, formato: formato, pais: pais };
+        // Evento específico por tienda (ClickBuscalibre, ClickAmazon, ClickKobo, …)
+        emitir(evento, 'trackCustom', evento, datos);
+        // Evento ClickPlataforma (genérico, se conserva)
+        emitir('ClickPlataforma', 'trackCustom', null, datos);
+        // Evento InitiateCheckout (Meta) — intención de compra (se conserva)
+        emitir('InitiateCheckout', 'track', null, datos);
+        // Evento select_item (GA4) — datos de e-commerce (se conserva)
+        emitir(null, null, 'select_item', {
+          item_list_name: plataforma,
+          items: [{ item_id: LIBRO.isbn, item_name: LIBRO.nombre, item_brand: LIBRO.autor, item_category: 'Libros', item_variant: formato }]
+        });
+        return;
+      }
+
+      // 2) Clic en un botón de país (selector "Elige tu país")
+      const paisBtn = e.target.closest('.pais-btn');
+      if (paisBtn) {
+        // Evento SeleccionPais — qué país elige el visitante
+        emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: paisBtn.dataset.pais || 'desconocido' });
+        return;
+      }
+
+      // 3) Clic en un enlace externo (redes/autor, reseñas originales, WhatsApp)
+      const link = e.target.closest('a[target="_blank"]');
+      if (!link) return;
+      let href;
+      try { href = new URL(link.getAttribute('href'), window.location.href); } catch (err) { return; }
+      if (href.hostname.indexOf('wa.me') !== -1) {
+        // Evento ClickWhatsAppDirecto — contacto por WhatsApp
+        emitir('ClickWhatsAppDirecto', 'trackCustom', 'contact', { metodo: 'whatsapp', destino: href.pathname });
+        return;
+      }
+      // Evento ClickEnlaceSocial — redes del autor, reseñas originales u otros externos
+      emitir('ClickEnlaceSocial', 'trackCustom', 'select_content', { content_type: 'enlace_externo', item_id: href.hostname });
+    });
+
+    /* ───────── BOTONES / CTA "COMPRAR" ───────── */
+    document.querySelectorAll('[data-cta="comprar_libro"]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        // Evento ClickComprarLibro — CTA que lleva a la sección de compra
+        emitir('ClickComprarLibro', 'trackCustom', 'ClickComprarLibro', { cta_location: el.dataset.ctaLocation || 'desconocido' });
+      });
+    });
+
+    /* ───────── APERTURA DE PREGUNTAS DEL FAQ ───────── */
+    document.querySelectorAll('details').forEach(function (el) {
+      el.addEventListener('toggle', function () {
+        if (!el.open) return;
+        const s = el.querySelector('summary');
+        const pregunta = (s ? s.textContent.trim() : 'pregunta').slice(0, 100);
+        // Evento FAQAbierta — qué duda abre el lector
+        emitir('FAQAbierta', 'trackCustom', 'faq_abierta', { pregunta: pregunta });
+      });
+    });
+
+    /* ───────── PROFUNDIDAD DE SCROLL (25/50/75/90 %) ───────── */
+    (function () {
+      const hitos = [25, 50, 75, 90];
+      let ticking = false;
+      function revisar() {
+        ticking = false;
+        const doc = document.documentElement;
+        const total = doc.scrollHeight - doc.clientHeight;
+        if (total <= 0) return;
+        const pct = Math.round((window.scrollY / total) * 100);
+        hitos.forEach(function (h) {
+          if (pct >= h) unaVez('scroll_' + h, function () {
+            // Evento Scroll25 / Scroll50 / Scroll75 / Scroll90
+            emitir('Scroll' + h, 'trackCustom', 'scroll_depth', { percent_scrolled: h });
+          });
+        });
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(revisar); }
+      }, { passive: true });
+    })();
+
+    /* ───────── TIEMPO DE PERMANENCIA ACTIVA (30/60/120/240 s) ─────────
+       Cuenta SOLO el tiempo con la pestaña visible. */
+    (function () {
+      const hitos = [30, 60, 120, 240];
+      let activoMs = 0;
+      let ultimo = Date.now();
+      let visible = !document.hidden;
+      function acumular() {
+        if (visible) { const ahora = Date.now(); activoMs += ahora - ultimo; ultimo = ahora; }
+      }
+      document.addEventListener('visibilitychange', function () {
+        acumular();
+        visible = !document.hidden;
+        ultimo = Date.now();
+      });
+      const intervalo = setInterval(function () {
+        acumular();
+        ultimo = Date.now();
+        const seg = Math.floor(activoMs / 1000);
+        hitos.forEach(function (h) {
+          if (seg >= h) unaVez('permanencia_' + h, function () {
+            // Evento Permanencia30s / Permanencia60s / Permanencia120s / Permanencia240s
+            emitir('Permanencia' + h + 's', 'trackCustom', 'permanencia_activa', { segundos_activos: h });
+          });
+        });
+        if (emitidos.has('permanencia_' + hitos[hitos.length - 1])) clearInterval(intervalo);
+      }, 5000);
+    })();
+
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     FUNCIONALIDAD DE LA PÁGINA (no analítica)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  // ── Catálogo de tiendas por país (sección "Consigue el libro") ──
+  const PAISES = {
+    co: { nombre: 'Colombia', bandera: '🇨🇴', tiendas: [
+      { nombre: 'Buscalibre',    evento: 'ClickBuscalibre',   formato: 'fisico',  logo: 'buscalibre.png',   desc: 'Envío dentro de Colombia',            url: 'https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' },
+      { nombre: 'Mercado Libre', evento: 'ClickMercadoLibre', formato: 'fisico',  logo: 'mercadolibre.png', desc: 'Compra nacional · envío rápido',      url: 'https://www.mercadolibre.com.co/el-tiempo-como-entidad-ontol243gica-libro-original/up/MCOU4008025326' },
+      { nombre: 'Casa del Libro',evento: 'ClickCasaDelLibro', formato: 'digital', logo: 'casadellibro.svg', desc: 'Versión eBook · descarga inmediata',  url: 'https://www.casadellibro.com.co/ebook-el-tiempo-como-entidad-ontologica-ebook/9791387716752/18223277' }
+    ]},
+    mx: { nombre: 'México', bandera: '🇲🇽', tiendas: [
+      { nombre: 'Gandhi',     evento: 'ClickGandhi',     formato: 'digital', logo: 'gandhi.png',     desc: 'Versión eBook',              url: 'https://www.gandhi.com.mx/el-tiempo-como-entidad-ontologica-9791387716752/p' },
+      { nombre: 'Buscalibre', evento: 'ClickBuscalibre', formato: 'fisico',  logo: 'buscalibre.png', desc: 'Envío dentro de México',     url: 'https://www.buscalibre.com.mx/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' }
+    ]},
+    es: { nombre: 'España', bandera: '🇪🇸', tiendas: [
+      { nombre: 'Libros.cc', evento: 'ClickLibrosCC', formato: 'ambos',  logo: 'libroscc.png', desc: 'Físico y digital',                  url: 'https://libros.cc/El-tiempo-como-entidad-ontologica.htm?isbn=9791387717483' },
+      { nombre: 'Agapea',    evento: 'ClickAgapea',   formato: 'fisico', logo: 'agapea.svg',   desc: 'Librería española · envío gratis desde 18€', url: 'https://www.agapea.com/Luis-Amin-Velasco-Cobos/El-tiempo-como-entidad-ontologica-9791387717483-i.htm' }
+    ]},
+    ar: { nombre: 'Argentina', bandera: '🇦🇷', tiendas: [
+      { nombre: 'Buscalibre', evento: 'ClickBuscalibre', formato: 'fisico',  logo: 'buscalibre.png', desc: 'Envío dentro de Argentina', url: 'https://www.buscalibre.com.ar/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' },
+      { nombre: 'Kobo',       evento: 'ClickKobo',       formato: 'digital', logo: 'kobo.svg',       desc: 'Versión eBook',             url: 'https://www.kobo.com/ar/es/ebook/el-tiempo-como-entidad-ontologica?sId=8d039879-b1a1-4685-a441-b3a8006ab2b4&ssId=atlyPQy7-ZeII0L4iFuf_&cPos=1' }
+    ]},
+    otros: { nombre: 'Otros países', bandera: '🌎', tiendas: [
+      { nombre: 'Amazon',              evento: 'ClickAmazon',     formato: 'ambos',   logo: 'amazon.svg',     desc: 'Físico y Kindle · envío internacional', url: 'https://www.amazon.com/-/es/Luis-Amin-Velasco-Cobos/dp/B0GZ7R363W' },
+      { nombre: 'Google Play Libros',  evento: 'ClickGooglePlay', formato: 'digital', logo: 'googleplay.svg', desc: 'Versión digital',                       url: 'https://play.google.com/store/books/details/Luis_Amin_Velasco_Cobos_El_tiempo_como_entidad_ont?id=MhXbEQAAQBAJ&hl=es_CO' }
+    ]}
+  };
+
+  document.addEventListener('alpine:init', () => {
+
+    // Componente: selección de país + tiendas
+    Alpine.data('tiendas', () => ({
+      pais: '',
+      paises: PAISES,
+      init() {
+        // Lee ?pais=co|mx|es|ar de la URL (enviado desde cada campaña de Meta Ads)
+        const p = (new URLSearchParams(window.location.search).get('pais') || '').toLowerCase();
+        if (PAISES[p]) this.pais = p;
+      },
+      get paisActual() { return this.pais ? PAISES[this.pais] : { nombre: '', bandera: '', tiendas: [] }; },
+      elegir(codigo) { this.pais = codigo; }
+    }));
+
+    // Componente: reseñas dinámicas
+    const fallbackReviews = {
+      updatedAt: '2026-07-09',
+      reviews: [
+        { platformLabel: 'Buscalibre', author: 'John Esteban Bedoya', rating: 5, text: 'Muy buen libro, me abrió la mente para entender el tiempo, no como una fecha específica, sino como lo que permite que la materia y el espacio puedan conjugarse. Ahora me enfocaré más en el presente dejando de lado la ansiedad por lo que el futuro, algo que no existe, pueda traer.', date: '2026-06-08', sourceUrl: 'https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' },
+        { platformLabel: 'Buscalibre', author: 'Jose Daniel Obando', rating: 5, text: 'Excelente libro, permite replantearse lo que pensamos sobre el tiempo y si injerencia en la vida.', date: '2026-06-26', sourceUrl: 'https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' },
+        { platformLabel: 'Buscalibre', author: 'Andres Vizcaino', rating: 5, text: 'Excelente libro, 100% recomendado.', date: '2026-05-15', sourceUrl: 'https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232' },
+        { platformLabel: 'Agapea', author: 'Cliente Agapea', rating: 5, text: 'Excelente libro, lo recomiendo al 100%, explica de una manera muy clara el concepto del tiempo.', date: '2026-05-08', sourceUrl: 'https://www.agapea.com/Luis-Amin-Velasco-Cobos/El-tiempo-como-entidad-ontologica-9791387717483-i.htm#opiniones' }
+      ]
+    };
+
+    Alpine.data('reviewsWidget', () => ({
+      reviews: fallbackReviews.reviews,
+      updatedAt: fallbackReviews.updatedAt,
+      filter: 'todas',
+      platforms: [...new Set(fallbackReviews.reviews.map(r => r.platformLabel))],
+      async load() {
+        try {
+          const res = await fetch('reviews.json', { cache: 'no-store' });
+          if (!res.ok) return;
+          const data = await res.json();
+          if (!data.reviews || !data.reviews.length) return;
+          this.reviews = data.reviews;
+          this.updatedAt = data.updatedAt || '';
+          this.platforms = [...new Set(this.reviews.map(r => r.platformLabel))];
+        } catch (e) {
+          // reviews.json no disponible (p. ej. al abrir el archivo local sin servidor): se usan las reseñas del HTML
+        }
+      },
+      get filteredReviews() {
+        return this.filter === 'todas' ? this.reviews : this.reviews.filter(r => r.platformLabel === this.filter);
+      },
+      get average() {
+        if (!this.reviews.length) return 0;
+        return this.reviews.reduce((sum, r) => sum + r.rating, 0) / this.reviews.length;
+      },
+      starsHtml(count) {
+        const full = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#E8A33D" stroke="#E8A33D" stroke-width="1"><polygon points="12 2 15 9 22 9.3 16.7 14 18.3 21 12 17.3 5.7 21 7.3 14 2 9.3 9 9"/></svg>';
+        const empty = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D8D2C4" stroke-width="1.5"><polygon points="12 2 15 9 22 9.3 16.7 14 18.3 21 12 17.3 5.7 21 7.3 14 2 9.3 9 9"/></svg>';
+        return Array.from({ length: 5 }, (_, i) => i < count ? full : empty).join('');
+      }
+    }));
+  });
+
+  // ── Revelado progresivo de las preguntas y bloques al hacer scroll ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) { en.target.classList.add('visible'); revealObserver.unobserve(en.target); }
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+  // ── Barra flotante (sticky CTA): aparece solo tras pasar el reveal del libro ──
+  const stickyCTA = document.getElementById('sticky-cta');
+  const libro = document.getElementById('libro');
+  if (stickyCTA && libro) {
+    new IntersectionObserver(([entry]) => {
+      // visible cuando la sección del libro ya quedó por encima del viewport
+      stickyCTA.classList.toggle('visible', entry.boundingClientRect.top < 0);
+    }, { threshold: 0 }).observe(libro);
+  }
+
+  // ── Año dinámico en el pie de página ──
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+</script>
+
+<script>
+  function openLegal(type) {
+    const el = document.getElementById('modal-' + type);
+    if (!el) return;
+    el.style.setProperty('display', 'flex', 'important');
+    document.body.style.overflow = 'hidden';
+    const body = el.querySelector('.legal-body');
+    if (body) body.scrollTop = 0;
+  }
+  function closeLegal(type) {
+    const el = document.getElementById('modal-' + type);
+    if (!el) return;
+    el.style.setProperty('display', 'none', 'important');
+    document.body.style.overflow = '';
+  }
+  ['terminos','privacidad'].forEach(function(type) {
+    document.addEventListener('DOMContentLoaded', function() {
+      const el = document.getElementById('modal-' + type);
+      if (!el) return;
+      el.addEventListener('click', function(e) { if (e.target === el) closeLegal(type); });
+    });
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeLegal('terminos'); closeLegal('privacidad'); }
+  });
+</script>
+
+<!-- ══════════════════════════════════════════════
+     MODAL — TÉRMINOS Y CONDICIONES
+═══════════════════════════════════════════════ -->
+<div id="modal-terminos" class="fixed inset-0 z-[70] flex items-center justify-center p-4 legal-overlay" style="display:none!important;">
+  <div class="legal-panel w-full max-w-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-amber-100 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-cta flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display text-lg" style="color:var(--navy);">Términos y Condiciones</h2>
+          <p class="text-xs text-zinc-400">Razón y Sentido · Última actualización: julio 2026</p>
+        </div>
+      </div>
+      <button onclick="closeLegal('terminos')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors text-zinc-400 hover:text-zinc-600">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="legal-body px-6 py-6 space-y-6">
+      <div class="rounded-xl p-4" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <p class="text-sm leading-relaxed" style="color:rgba(14,11,22,0.75);">Esta página es un espacio de referencia editorial sobre el libro <strong>El tiempo como entidad ontológica</strong>, de Luis Amin Velasco Cobos. No procesamos pagos directamente: te redirigimos a plataformas externas para completar tu compra.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📚</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">1. Sobre el libro</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-2"><strong>El tiempo como entidad ontológica</strong> (ISBN 9791387717483) es un ensayo filosófico de Luis Amin Velasco Cobos, publicado por la editorial Universo de Letras, disponible en formato físico y digital.</p>
+        <span class="legal-tag">ISBN 9791387717483</span>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🛒</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">2. Proceso de compra</h3>
+        </div>
+        <ul class="text-sm text-zinc-600 leading-relaxed space-y-1.5">
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Puedes comprar el libro directamente en cualquiera de las plataformas asociadas listadas según tu país.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Cada plataforma gestiona su propio proceso de pago, facturación y política de envío.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Para dudas antes o después de tu compra, puedes escribirnos por WhatsApp.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Los precios pueden variar entre plataformas y no son fijados por este sitio.</li>
+        </ul>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📦</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">3. Envíos y entregas</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Los tiempos y costos de envío dependen de la plataforma y el país elegidos. Las tiendas locales (Buscalibre, Mercado Libre, Casa del Libro, Gandhi, Agapea) gestionan sus propios envíos; las versiones digitales (eBook) se entregan de forma inmediata por descarga.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🔄</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">4. Cambios y devoluciones</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Las devoluciones y cambios se rigen por la política propia de la plataforma donde realizaste tu compra.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>⚖️</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">5. Marco legal aplicable</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-2">Estos términos se rigen por la legislación colombiana, incluyendo la <strong>Ley 1480 de 2011</strong> (Estatuto del Consumidor). Las compras realizadas en plataformas externas se rigen por los términos propios de cada una de ellas.</p>
+        <span class="legal-tag">Ley 1480 / 2011</span>
+      </div>
+
+      <div class="rounded-xl p-4 flex items-center gap-3" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-2.91-8.63A2 2 0 012.18 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+        <p class="text-sm" style="color:rgba(14,11,22,0.75);"><strong>¿Tienes preguntas?</strong> Escríbenos al WhatsApp <a href="https://wa.me/573235109187" target="_blank" class="font-semibold" style="color:var(--gold);">+57 323 510 9187</a>.</p>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0 px-6 py-4 border-t border-amber-100">
+      <button onclick="closeLegal('terminos')" class="block w-full gradient-cta text-white font-bold text-sm py-3 rounded-xl text-center hover:opacity-90 transition-opacity">Entendido — Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL — POLÍTICA DE PRIVACIDAD
+═══════════════════════════════════════════════ -->
+<div id="modal-privacidad" class="fixed inset-0 z-[70] flex items-center justify-center p-4 legal-overlay" style="display:none!important;">
+  <div class="legal-panel w-full max-w-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-amber-100 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-cta flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display text-lg" style="color:var(--navy);">Política de Privacidad</h2>
+          <p class="text-xs text-zinc-400">Ley 1581 de 2012 · Habeas Data</p>
+        </div>
+      </div>
+      <button onclick="closeLegal('privacidad')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors text-zinc-400 hover:text-zinc-600">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="legal-body px-6 py-6 space-y-6">
+      <div class="rounded-xl p-4" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <p class="text-sm leading-relaxed" style="color:rgba(14,11,22,0.75);">Respetamos y protegemos tu privacidad. Esta política explica qué datos recopilamos y para qué los usamos, en cumplimiento de la <strong>Ley 1581 de 2012</strong> y el <strong>Decreto 1377 de 2013</strong> de la República de Colombia.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📋</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">1. Datos que recopilamos</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Este sitio no tiene un formulario propio de datos. Las compras se realizan directamente en las plataformas asociadas, cada una con su propia política de tratamiento de datos. Si nos escribes por WhatsApp para hacer una consulta, esos datos quedan dentro de esa conversación, no en este sitio. Adicionalmente, usamos Meta Pixel y Google Analytics para medir el rendimiento de la página (clics, navegación), sin recolectar datos que te identifiquen personalmente.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🎯</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">2. Finalidad del tratamiento</h3>
+        </div>
+        <ul class="text-sm text-zinc-600 leading-relaxed space-y-1.5">
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Atención al cliente y resolución de consultas sobre el libro.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Medir el rendimiento y la navegación de esta página.</li>
+        </ul>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>💬</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">3. WhatsApp y comunicaciones</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Si nos escribes por WhatsApp con una consulta, esa conversación es privada entre tú y nosotros. <strong>No compartimos tus datos con terceros, no vendemos bases de datos ni enviamos publicidad no solicitada.</strong></p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="legal-section-icon"><span>✅</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">4. Tus derechos — Habeas Data</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-3">Conforme a la <strong>Ley 1581 de 2012</strong>, tienes derecho a conocer, actualizar, rectificar y suprimir los datos que nos hayas entregado. Para ejercer cualquiera de estos derechos, escríbenos al WhatsApp de contacto.</p>
+        <div class="flex gap-2 flex-wrap">
+          <span class="legal-tag">Ley 1581 / 2012</span>
+          <span class="legal-tag">Decreto 1377 / 2013</span>
+        </div>
+      </div>
+
+      <div class="rounded-xl p-4 flex items-center gap-3" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-2.91-8.63A2 2 0 012.18 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+        <p class="text-sm" style="color:rgba(14,11,22,0.75);"><strong>Responsable del tratamiento:</strong> Luis Amin Velasco Cobos · WhatsApp <a href="https://wa.me/573235109187" target="_blank" class="font-semibold" style="color:var(--gold);">+57 323 510 9187</a></p>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0 px-6 py-4 border-t border-amber-100">
+      <button onclick="closeLegal('privacidad')" class="block w-full gradient-cta text-white font-bold text-sm py-3 rounded-xl text-center hover:opacity-90 transition-opacity">Entendido — Cerrar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

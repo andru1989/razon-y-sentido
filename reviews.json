@@ -1,0 +1,37 @@
+{
+  "updatedAt": "2026-07-09",
+  "reviews": [
+    {
+      "platformLabel": "Buscalibre",
+      "author": "John Esteban Bedoya",
+      "rating": 5,
+      "text": "Muy buen libro, me abrió la mente para entender el tiempo, no como una fecha específica, sino como lo que permite que la materia y el espacio puedan conjugarse. Ahora me enfocaré más en el presente dejando de lado la ansiedad por lo que el futuro, algo que no existe, pueda traer.",
+      "date": "2026-06-08",
+      "sourceUrl": "https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232"
+    },
+    {
+      "platformLabel": "Buscalibre",
+      "author": "Jose Daniel Obando",
+      "rating": 5,
+      "text": "Excelente libro, permite replantearse lo que pensamos sobre el tiempo y si injerencia en la vida.",
+      "date": "2026-06-26",
+      "sourceUrl": "https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232"
+    },
+    {
+      "platformLabel": "Buscalibre",
+      "author": "Andres Vizcaino",
+      "rating": 5,
+      "text": "Excelente libro, 100% recomendado.",
+      "date": "2026-05-15",
+      "sourceUrl": "https://www.buscalibre.com.co/libro-el-tiempo-como-entidad-ontologica/9791387717483/p/67219232"
+    },
+    {
+      "platformLabel": "Agapea",
+      "author": "Cliente Agapea",
+      "rating": 5,
+      "text": "Excelente libro, lo recomiendo al 100%, explica de una manera muy clara el concepto del tiempo.",
+      "date": "2026-05-08",
+      "sourceUrl": "https://www.agapea.com/Luis-Amin-Velasco-Cobos/El-tiempo-como-entidad-ontologica-9791387717483-i.htm#opiniones"
+    }
+  ]
+}
