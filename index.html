@@ -683,9 +683,7 @@
     (function () {
       const precio = precioDe(paisDeURL());
       // Evento ViewContent / view_item — vista de la ficha del libro
-      emitir('ViewContent', 'track', 'view_item', Object.assign({
-        items: [itemLibro(precio.value ? { price: precio.value } : null)]
-      }, precio));
+      // No se envía ViewContent ni view_item.
     })();
 
     /* ───────── MANEJADOR DELEGADO DE CLICS ─────────
@@ -700,21 +698,16 @@
         const formato = card.dataset.format || 'desconocido';
         const pais = card.dataset.pais || 'na';
         const evento = card.dataset.store || 'ClickPlataformaOtra';
-        const precio = precioDe(pais);
-        const datos = Object.assign({ plataforma: plataforma, formato: formato, pais: pais }, precio);
-        const item = [itemLibro(Object.assign({ item_variant: formato }, precio.value ? { price: precio.value } : null))];
+        const datos = { plataforma: plataforma, formato: formato, pais: pais };
 
         /* Evento específico por tienda (ClickBuscalibre, ClickAmazon, …).
            Se mantiene SOLO en Meta, donde puede estar en uso en campañas.
            En GA4 la tienda viaja como `item_list_name` de select_item, en
            lugar de crear un nombre de evento distinto por cada librería. */
-        emitir(evento, 'trackCustom', null, datos);
+        emitir(evento, 'trackCustom', evento, datos);
         // Evento ClickPlataforma (genérico, se conserva)
-        emitir('ClickPlataforma', 'trackCustom', null, datos);
         // Intención de compra: InitiateCheckout (Meta) + begin_checkout (GA4)
-        emitir('InitiateCheckout', 'track', 'begin_checkout', Object.assign({ items: item }, datos));
         // Evento select_item (GA4) — datos de e-commerce (se conserva)
-        emitir(null, null, 'select_item', Object.assign({ item_list_name: plataforma, items: item }, datos));
         return;
       }
 
@@ -733,18 +726,15 @@
       try { href = new URL(link.getAttribute('href'), window.location.href); } catch (err) { return; }
       if (href.hostname.indexOf('wa.me') !== -1) {
         // Evento ClickWhatsAppDirecto — contacto por WhatsApp
-        emitir('ClickWhatsAppDirecto', 'trackCustom', 'contact', { metodo: 'whatsapp', destino: href.pathname });
         return;
       }
       // Evento ClickEnlaceSocial — redes del autor, reseñas originales u otros externos
-      emitir('ClickEnlaceSocial', 'trackCustom', 'select_content', { content_type: 'enlace_externo', item_id: href.hostname });
     });
 
     /* ───────── BOTONES / CTA "COMPRAR" ───────── */
     document.querySelectorAll('[data-cta="comprar_libro"]').forEach(function (el) {
       el.addEventListener('click', function () {
         // Evento ClickComprarLibro — CTA que lleva a la sección de compra
-        emitir('ClickComprarLibro', 'trackCustom', 'click_comprar_libro', { cta_location: el.dataset.ctaLocation || 'desconocido' });
       });
     });
 
@@ -755,7 +745,6 @@
         const s = el.querySelector('summary');
         const pregunta = (s ? s.textContent.trim() : 'pregunta').slice(0, 100);
         // Evento FAQAbierta — qué duda abre el lector
-        emitir('FAQAbierta', 'trackCustom', 'faq_abierta', { pregunta: pregunta });
       });
     });
 
@@ -766,8 +755,8 @@
       if (!('IntersectionObserver' in window)) return;
       const secciones = [
         { id: 'libro',   meta: 'LibroVisible',    ga: 'libro_visible' },
-        { id: 'resenas', meta: 'ResenasVisibles', ga: 'resenas_visibles' },
-        { id: 'faq',     meta: 'FAQVisible',      ga: 'faq_visible' }
+        { id: 'resenas', meta: 'Reseñas',              ga: 'resenas' },
+        { id: 'faq',     meta: 'Preguntas frecuentes', ga: 'preguntas_frecuentes' }
       ];
       secciones.forEach(function (s) {
         const el = document.getElementById(s.id);
@@ -798,7 +787,7 @@
         hitos.forEach(function (h) {
           if (pct >= h) unaVez('scroll_' + h, function () {
             // Evento Scroll25 / Scroll50 / Scroll75 / Scroll90
-            emitir('Scroll' + h, 'trackCustom', 'scroll_depth', { percent_scrolled: h });
+            emitir('Scroll', 'trackCustom', 'scroll', { percent_scrolled: h });
           });
         });
       }
@@ -811,30 +800,6 @@
        Cuenta SOLO el tiempo con la pestaña visible. Se revisa cada
        segundo para que el hito se registre cerca del segundo exacto. */
     (function () {
-      const hitos = [30, 60, 120, 240];
-      let activoMs = 0;
-      let ultimo = Date.now();
-      let visible = !document.hidden;
-      function acumular() {
-        if (visible) { const ahora = Date.now(); activoMs += ahora - ultimo; ultimo = ahora; }
-      }
-      document.addEventListener('visibilitychange', function () {
-        acumular();
-        visible = !document.hidden;
-        ultimo = Date.now();
-      });
-      const intervalo = setInterval(function () {
-        acumular();
-        ultimo = Date.now();
-        const seg = Math.floor(activoMs / 1000);
-        hitos.forEach(function (h) {
-          if (seg >= h) unaVez('permanencia_' + h, function () {
-            // Evento Permanencia30s / Permanencia60s / Permanencia120s / Permanencia240s
-            emitir('Permanencia' + h + 's', 'trackCustom', 'permanencia_activa', { segundos_activos: h });
-          });
-        });
-        if (emitidos.has('permanencia_' + hitos[hitos.length - 1])) clearInterval(intervalo);
-      }, 1000);
     })();
 
   })();
