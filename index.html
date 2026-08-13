@@ -705,6 +705,8 @@
       // 1) Clic en una tarjeta de plataforma de compra
       const card = e.target.closest('.platform-card');
       if (card) {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
         const plataforma = card.dataset.platform || 'desconocida';
         const formato = card.dataset.format || 'desconocido';
         const pais = card.dataset.pais || 'na';
@@ -716,6 +718,9 @@
            En GA4 la tienda viaja como `item_list_name` de select_item, en
            lugar de crear un nombre de evento distinto por cada librería. */
         emitir(evento, 'trackCustom', evento, datos);
+        setTimeout(function () {
+          window.open(card.href, '_blank', 'noopener');
+        }, 350);
         // Evento ClickPlataforma (genérico, se conserva)
         // Intención de compra: InitiateCheckout (Meta) + begin_checkout (GA4)
         // Evento select_item (GA4) — datos de e-commerce (se conserva)
