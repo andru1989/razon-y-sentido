@@ -712,6 +712,7 @@
         const pais = card.dataset.pais || 'na';
         const evento = card.dataset.store || 'ClickPlataformaOtra';
         const datos = { plataforma: plataforma, formato: formato, pais: pais };
+        const ventana = window.open('', '_blank');
 
         /* Evento específico por tienda (ClickBuscalibre, ClickAmazon, …).
            Se mantiene SOLO en Meta, donde puede estar en uso en campañas.
@@ -719,7 +720,12 @@
            lugar de crear un nombre de evento distinto por cada librería. */
         emitir(evento, 'trackCustom', evento, datos);
         setTimeout(function () {
-          window.open(card.href, '_blank', 'noopener');
+          if (ventana) {
+            ventana.opener = null;
+            ventana.location.href = card.href;
+          } else {
+            window.location.href = card.href;
+          }
         }, 350);
         // Evento ClickPlataforma (genérico, se conserva)
         // Intención de compra: InitiateCheckout (Meta) + begin_checkout (GA4)
