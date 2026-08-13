@@ -142,6 +142,7 @@
     /* Mantiene la continuidad narrativa sin eliminar el aire visual entre bloques. */
     .narrative-flow { row-gap: 5.5rem; }
     .story-section { padding-block: 3.5rem; }
+    .opening-screen { min-height: 80vh; }
     @media (min-width: 640px) {
       .narrative-flow { row-gap: 7rem; }
       .story-section { padding-block: 5rem; }
@@ -254,7 +255,7 @@
 ═══════════════════════════════════════════════ -->
 <section class="apertura">
   <!-- Primera pantalla -->
-  <div class="min-h-screen flex flex-col items-center justify-center text-center px-6">
+  <div class="opening-screen flex flex-col items-center justify-center text-center px-6">
     <p class="q-main max-w-3xl">¿El tiempo existe…<br>o lo inventamos?</p>
     <div class="scroll-hint mt-16 flex flex-col items-center gap-2" style="color:rgba(255,255,255,0.4);">
       <span class="text-xs tracking-widest uppercase">Sigue bajando</span>
