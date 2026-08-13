@@ -459,7 +459,7 @@
     </p>
 
     <!-- Selector de país -->
-    <div x-show="!pais">
+    <div id="selector-pais" x-show="!pais">
       <p class="text-sm font-bold uppercase tracking-widest mb-5" style="color:var(--gold-dark, #C7822A);">Elige tu país</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <template x-for="(datos, codigo) in paises" :key="codigo">
@@ -778,7 +778,8 @@
       const secciones = [
         { id: 'libro',   meta: 'LibroVisible',    ga: 'libro_visible' },
         { id: 'resenas', meta: 'Reseñas',              ga: 'resenas' },
-        { id: 'faq',     meta: 'Preguntas frecuentes', ga: 'preguntas_frecuentes' }
+        { id: 'faq',     meta: 'Preguntas frecuentes', ga: 'preguntas_frecuentes' },
+        { id: 'selector-pais', meta: 'SelectorPaisVisible', ga: 'selector_pais_visible' }
       ];
       secciones.forEach(function (s) {
         const el = document.getElementById(s.id);
