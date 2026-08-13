@@ -1,0 +1,36 @@
+name: Deploy landing to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Upload landing by FTP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USER }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          server-dir: ${{ secrets.HOSTINGER_FTP_DIR }}
+          protocol: ftps
+          port: 21
+          state-name: .ftp-deploy-sync-state.json
+          exclude: |
+            **/.git*/**
+            **/.github/**
+            **/.DS_Store
+            **/index_backup.html
+            **/index_pre_*.html
