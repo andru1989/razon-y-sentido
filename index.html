@@ -139,6 +139,14 @@
     }
     @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
 
+    /* Mantiene la continuidad narrativa sin eliminar el aire visual entre bloques. */
+    .narrative-flow { row-gap: 5.5rem; }
+    .story-section { padding-block: 3.5rem; }
+    @media (min-width: 640px) {
+      .narrative-flow { row-gap: 7rem; }
+      .story-section { padding-block: 5rem; }
+    }
+
     /* ── Revelado progresivo al hacer scroll ── */
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s ease; }
     .reveal.visible { opacity: 1; transform: none; }
@@ -255,7 +263,7 @@
   </div>
 
   <!-- Descenso de preguntas -->
-  <div class="max-w-3xl mx-auto px-6 pb-24 space-y-32 sm:space-y-40">
+  <div class="max-w-3xl mx-auto px-6 pb-16 narrative-flow flex flex-col">
     <div class="reveal text-center">
       <p class="q-lead">Si existe…</p>
       <p class="q-main">¿Dónde está?</p>
@@ -291,7 +299,7 @@
      SECCIÓN 2 · EL LIBRO APARECE
      Primera y única aparición de la portada.
 ═══════════════════════════════════════════════ -->
-<section id="libro" class="py-20 sm:py-28 bg-white">
+<section id="libro" class="story-section py-20 sm:py-28 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center">
     <p class="reveal font-display text-2xl sm:text-3xl mb-3" style="color:var(--navy);">
       Yo también me hice esas preguntas.
@@ -314,7 +322,7 @@
 <!-- ══════════════════════════════════════════════
      SECCIÓN 3 · RESEÑAS (cargadas desde reviews.json)
 ═══════════════════════════════════════════════ -->
-<section id="resenas" class="py-16 sm:py-20" style="background:var(--cream);"
+<section id="resenas" class="story-section py-16 sm:py-20" style="background:var(--cream);"
   x-data="reviewsWidget()" x-init="load()">
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
     <div class="text-center mb-10">
@@ -382,7 +390,7 @@
 <!-- ══════════════════════════════════════════════
      SECCIÓN 4 · PREGUNTAS FRECUENTES
 ═══════════════════════════════════════════════ -->
-<section id="faq" class="py-16 bg-white">
+<section id="faq" class="story-section py-16 bg-white">
   <div class="max-w-2xl mx-auto px-4 sm:px-6">
     <div class="text-center mb-10">
       <div class="divider-gold"></div>
@@ -438,7 +446,7 @@
      Lee ?pais=co|mx|es|ar de la URL. Si no viene,
      muestra el selector "Elige tu país".
 ═══════════════════════════════════════════════ -->
-<section id="consigue" class="py-16 sm:py-20" style="background:var(--cream);"
+<section id="consigue" class="story-section py-16 sm:py-20" style="background:var(--cream);"
   x-data="tiendas()" x-init="init()">
   <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
     <div class="divider-gold"></div>
