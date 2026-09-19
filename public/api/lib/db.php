@@ -69,6 +69,12 @@ CREATE TABLE IF NOT EXISTS eventos_webhook (
   cuerpo      TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_evento_unico ON eventos_webhook(proveedor, evento_id);
+
+CREATE TABLE IF NOT EXISTS geo_cache (
+  ip_hash       TEXT PRIMARY KEY,               -- sha256 de la IP: nunca se guarda la IP en claro
+  iso           TEXT NOT NULL,
+  consultado_en TEXT NOT NULL
+);
 SQL);
 }
 

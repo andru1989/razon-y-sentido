@@ -22,7 +22,31 @@ function leerJson<T>(id: string, porDefecto: T): T {
   }
 }
 
-// País sugerido por el idioma del navegador (es-CO → co). Nunca sustituye a ?pais=.
+// País por IP, resuelto por el servidor (/api/pais.php). Devuelve '' si no se puede saber.
+async function paisPorIp(): Promise<string> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3000);
+    const res = await fetch('/api/pais.php', { headers: { Accept: 'application/json' }, signal: ctrl.signal });
+    clearTimeout(t);
+    if (!res.ok) return '';
+    const data = (await res.json()) as { pais?: string | null };
+    return data.pais || '';
+  } catch {
+    return '';
+  }
+}
+
+// Elección explícita del visitante, recordada entre visitas.
+const CLAVE_PAIS = 'rys_pais';
+function leerPaisGuardado(): string {
+  try { return localStorage.getItem(CLAVE_PAIS) || ''; } catch { return ''; }
+}
+function guardarPais(codigo: string) {
+  try { codigo ? localStorage.setItem(CLAVE_PAIS, codigo) : localStorage.removeItem(CLAVE_PAIS); } catch { /* sin almacenamiento */ }
+}
+
+// País sugerido por el idioma del navegador (es-CO → co). Último recurso.
 function paisPorIdioma(catalogo: Catalogo): string {
   const idiomas = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]) || [];
   for (const idioma of idiomas) {
@@ -50,22 +74,39 @@ export function registrarComponentes(Alpine: AlpineType) {
       registrarPrecios(this.paises);
 
       const q = new URLSearchParams(window.location.search);
-      // 1) País de la URL (enviado desde cada campaña de Meta Ads)
-      const p = (q.get('pais') || '').toLowerCase();
-      if (this.paises[p]) {
-        this.pais = p;
-        emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: p, origen: 'url' });
-      } else {
-        // 2) Deducido del idioma del navegador; siempre se puede cambiar
-        const sugerido = paisPorIdioma(this.paises);
-        if (sugerido) {
-          this.pais = sugerido;
-          emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: sugerido, origen: 'idioma' });
-        }
-      }
       if (q.get('pago') === 'cancelado') {
         this.aviso = 'Tu pago no se completó y no se hizo ningún cargo. Puedes intentarlo de nuevo cuando quieras.';
       }
+
+      // Prioridad: 1) ?pais= de la URL (campañas) · 2) elección previa guardada ·
+      // 3) país por IP (/api/pais.php) · 4) idioma del navegador. Siempre se puede cambiar.
+      const deUrl = (q.get('pais') || '').toLowerCase();
+      if (this.paises[deUrl]) {
+        this.fijarPais(deUrl, 'url');
+        return;
+      }
+      const guardado = leerPaisGuardado();
+      if (guardado && this.paises[guardado]) {
+        this.fijarPais(guardado, 'guardado');
+        return;
+      }
+      void this.detectarPais();
+    },
+
+    async detectarPais() {
+      const porIp = await paisPorIp();
+      if (this.pais) return; // el visitante ya eligió mientras tanto
+      if (porIp && this.paises[porIp]) {
+        this.fijarPais(porIp, 'ip');
+        return;
+      }
+      const porIdioma = paisPorIdioma(this.paises);
+      if (porIdioma) this.fijarPais(porIdioma, 'idioma');
+    },
+
+    fijarPais(codigo: string, origen: string) {
+      this.pais = codigo;
+      emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: codigo, origen });
     },
 
     get paisActual(): Pais {
@@ -87,11 +128,13 @@ export function registrarComponentes(Alpine: AlpineType) {
     elegir(codigo: string) {
       this.pais = codigo;
       this.error = '';
+      guardarPais(codigo);
     },
     cambiarPais() {
       this.pais = '';
       this.error = '';
       this.aviso = '';
+      guardarPais('');
     },
 
     async comprar() {
