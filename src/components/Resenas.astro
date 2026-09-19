@@ -1,0 +1,67 @@
+---
+// SECCIÓN 3 · RESEÑAS (cargadas desde /reviews.json, con respaldo en el bundle)
+---
+<section id="resenas" class="story-section py-16 sm:py-20" style="background:var(--cream);"
+  x-data="reviewsWidget()" x-init="load()">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <div class="divider-gold"></div>
+      <h2 class="font-display text-3xl sm:text-4xl mb-3" style="color:var(--navy);">Lo que dicen los <span class="text-gold">lectores</span></h2>
+      <p class="max-w-lg mx-auto text-sm" style="color:rgba(14,11,22,0.55);">
+        Reseñas reales publicadas en las plataformas de venta.
+      </p>
+      <p class="text-xs mt-2" style="color:rgba(14,11,22,0.4);" x-show="updatedAt" x-cloak>
+        Última actualización: <span x-text="updatedAt"></span>
+      </p>
+    </div>
+
+    <!-- Promedio -->
+    <div class="flex items-center justify-center gap-3 mb-10" x-show="reviews.length" x-cloak>
+      <span class="font-display text-3xl" style="color:var(--navy);" x-text="average.toFixed(1)"></span>
+      <div class="flex flex-col">
+        <div class="flex gap-0.5" x-html="starsHtml(Math.round(average))"></div>
+        <span class="text-xs" style="color:rgba(14,11,22,0.5);" x-text="reviews.length + ' reseña' + (reviews.length===1?'':'s') + ' en total'"></span>
+      </div>
+    </div>
+
+    <!-- Filtro por plataforma -->
+    <div class="flex flex-wrap justify-center gap-2 mb-8" x-show="reviews.length" x-cloak>
+      <button type="button" @click="filter='todas'"
+        :class="filter==='todas' ? 'tab-active' : 'tab-inactive'"
+        class="text-xs px-3 py-1.5 rounded-full border border-amber-200">Todas</button>
+      <template x-for="p in platforms" :key="p">
+        <button type="button" @click="filter=p"
+          :class="filter===p ? 'tab-active' : 'tab-inactive'"
+          class="text-xs px-3 py-1.5 rounded-full border border-amber-200 capitalize" x-text="p"></button>
+      </template>
+    </div>
+
+    <!-- Grid de reseñas -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" x-show="reviews.length" x-cloak>
+      <template x-for="r in filteredReviews" :key="r.author + r.date">
+        <div class="review-card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex gap-0.5" x-html="starsHtml(r.rating)"></div>
+            <span class="format-badge text-[10px]!" x-text="r.platformLabel"></span>
+          </div>
+          <p class="text-sm leading-relaxed mb-3" style="color:rgba(14,11,22,0.72);" x-text="r.text"></p>
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold" style="color:var(--navy);" x-text="r.author"></p>
+            <p class="text-xs" style="color:rgba(14,11,22,0.4);" x-text="r.date"></p>
+          </div>
+          <a :href="r.sourceUrl" target="_blank" rel="noopener nofollow" x-show="r.sourceUrl" x-cloak
+            class="inline-flex items-center gap-1 text-xs font-semibold" style="color:var(--teal);">
+            Ver reseña original ↗
+          </a>
+        </div>
+      </template>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="text-center py-10 rounded-2xl bg-white" x-show="!reviews.length" x-cloak>
+      <p class="text-sm" style="color:rgba(14,11,22,0.55);">
+        Aún no hay reseñas publicadas en esta sección.
+      </p>
+    </div>
+  </div>
+</section>

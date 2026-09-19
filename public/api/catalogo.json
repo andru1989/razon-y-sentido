@@ -1,0 +1,80 @@
+{
+  "_comentario": "Fuente única de verdad para precios y pasarelas. La lee Astro (para pintar la landing) y PHP (para cobrar). Cambiar un precio aquí y hacer push a main basta.",
+  "libro": {
+    "isbn": "9791387717483",
+    "isbn_ebook": "9791387716752",
+    "titulo": "El tiempo como entidad ontológica",
+    "subtitulo": "Una investigación filosófica sobre la naturaleza del tiempo",
+    "autor": "Luis Amin Velasco Cobos",
+    "editorial": "Universo de Letras",
+    "categoria": "Filosofía / Metafísica",
+    "archivo": "libro.epub",
+    "nombre_descarga": "El-tiempo-como-entidad-ontologica-Luis-Amin-Velasco-Cobos.epub"
+  },
+  "descarga": {
+    "dias_validez": 30,
+    "descargas_max": 5
+  },
+  "paises": {
+    "co": {
+      "nombre": "Colombia",
+      "bandera": "🇨🇴",
+      "directo": {
+        "activo": true,
+        "proveedor": "mercadopago",
+        "moneda": "COP",
+        "precio": 25000,
+        "precio_texto": "$25.000 COP",
+        "medios": "PSE, Nequi, tarjetas y efectivo"
+      }
+    },
+    "mx": {
+      "nombre": "México",
+      "bandera": "🇲🇽",
+      "directo": {
+        "activo": true,
+        "proveedor": "paypal",
+        "moneda": "USD",
+        "precio": 7.99,
+        "precio_texto": "US$7.99",
+        "medios": "tarjeta o saldo PayPal"
+      }
+    },
+    "es": {
+      "nombre": "España",
+      "bandera": "🇪🇸",
+      "directo": {
+        "activo": true,
+        "proveedor": "paypal",
+        "moneda": "EUR",
+        "precio": 6,
+        "precio_texto": "6 €",
+        "medios": "tarjeta o saldo PayPal"
+      }
+    },
+    "ar": {
+      "nombre": "Argentina",
+      "bandera": "🇦🇷",
+      "directo": {
+        "activo": true,
+        "proveedor": "paypal",
+        "moneda": "USD",
+        "precio": 7.99,
+        "precio_texto": "US$7.99",
+        "medios": "tarjeta o saldo PayPal"
+      }
+    },
+    "otros": {
+      "nombre": "Otros países",
+      "bandera": "🌎",
+      "directo": {
+        "activo": true,
+        "proveedor": "paypal",
+        "moneda": "USD",
+        "precio": 7.99,
+        "precio_texto": "US$7.99",
+        "medios": "tarjeta o saldo PayPal"
+      }
+    }
+  }
+}

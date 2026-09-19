@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import { LIBRO, SITIO } from '../data/libro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Ruta canónica de la página (p. ej. "/" o "/gracias"). */
+  path?: string;
+  /** Las páginas transaccionales (gracias) no deben indexarse. */
+  noindex?: boolean;
+}
+
+const {
+  title = `El Tiempo como Entidad Ontológica · ${LIBRO.autor}`,
+  description = '¿El tiempo existe o lo inventamos? Una investigación filosófica de Luis Amin Velasco Cobos sobre la naturaleza del tiempo. Compra el EPUB con descarga inmediata o consíguelo en físico según tu país.',
+  path = '/',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(path, SITIO.url).href;
+const portada = new URL('/img/portada.jpeg', SITIO.url).href;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="icon" type="image/jpeg" href="/img/portada.jpeg" />
+  <link rel="apple-touch-icon" href="/img/portada.jpeg" />
+
+  <!-- Open Graph / Twitter: cómo se ve el enlace al compartirlo -->
+  <meta property="og:type" content="book" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={portada} />
+  <meta property="og:locale" content="es_CO" />
+  <meta property="og:site_name" content="Razón y Sentido" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google tag (gtag.js) -->
+  <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITIO.ga4Id}`}></script>
+  <script is:inline define:vars={{ ga4Id: SITIO.ga4Id }}>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', ga4Id);
+  </script>
+
+  <!-- Meta Pixel -->
+  <script is:inline define:vars={{ pixelId: SITIO.metaPixelId }}>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', pixelId);
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src={`https://www.facebook.com/tr?id=${SITIO.metaPixelId}&ev=PageView&noscript=1`}/></noscript>
+  <!-- End Meta Pixel -->
+
+  <slot name="head" />
+
+  <!-- Fonts: Syne (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <slot />
+  <!-- Un solo bundle: analítica + Alpine (componentes registrados antes de start) -->
+  <script>
+    import '../scripts/app';
+  </script>
+</body>
+</html>

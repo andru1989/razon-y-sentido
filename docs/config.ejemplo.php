@@ -1,0 +1,58 @@
+<?php
+/**
+ * Plantilla de private/config.php.
+ *
+ * Copiar a:  ~/domains/tiempo.razonysentido.com/private/config.php   (servidor)
+ *            ./private/config.php                                     (pruebas locales)
+ * Ese directorio está FUERA de public_html y nunca se versiona en git.
+ */
+return [
+    // 'sandbox' usa las credenciales de prueba y api-m.sandbox.paypal.com; 'produccion' cobra de verdad.
+    'modo' => 'sandbox',
+
+    // URL pública, sin barra final. En local: 'http://localhost:8080'.
+    'url_sitio' => 'https://tiempo.razonysentido.com',
+
+    'mercadopago' => [
+        // Panel de desarrolladores → Tu aplicación → Credenciales (de prueba o de producción según `modo`).
+        'access_token' => 'APP_USR-xxxxxxxxxxxxxxxx-xxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxx',
+        // Tu aplicación → Webhooks → Clave secreta (opcional pero recomendado).
+        'webhook_secret' => '',
+    ],
+
+    'paypal' => [
+        // developer.paypal.com → Apps & Credentials → tu app (Sandbox o Live según `modo`).
+        'client_id' => '',
+        'secret' => '',
+        // Webhooks → el Webhook ID que aparece al crearlo (opcional; sin él no se verifica la firma).
+        'webhook_id' => '',
+    ],
+
+    'correo' => [
+        'remitente' => 'libro@razonysentido.com',
+        'nombre' => 'Razón y Sentido',
+        'responder_a' => 'libro@razonysentido.com',
+        // Aviso de cada venta al vendedor (vacío = no enviar).
+        'copia_a' => '',
+        // 'mail' (sendmail de Hostinger, sin configurar nada) o 'smtp' (buzón del dominio; mejor entregabilidad).
+        'transporte' => 'mail',
+        'smtp' => [
+            'host' => 'smtp.hostinger.com',
+            'puerto' => 465,
+            'usuario' => 'libro@razonysentido.com',
+            'clave' => '',
+        ],
+    ],
+
+    'meta' => [
+        // Conversions API (opcional): Administrador de eventos → tu píxel → Configuración → Generar token.
+        'pixel_id' => '824486448991877',
+        'capi_token' => '',
+        'test_event_code' => '',
+    ],
+
+    'admin' => [
+        // Clave (≥ 12 caracteres) para /api/pedidos-admin.php?clave=… Vacía = panel desactivado.
+        'clave' => '',
+    ],
+];

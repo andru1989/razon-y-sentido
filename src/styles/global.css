@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────
+   DESIGN TOKENS — El Tiempo como Entidad Ontológica
+──────────────────────────────────────────── */
+:root {
+  --navy:   #0E0B16;
+  --gold:   #E8A33D;
+  --gold-l: #F5C983;
+  --gold-dark: #C7822A;
+  --teal:   #2E7C99;
+  --teal-l: #5FA8C4;
+  --cream:  #F7F3EA;
+}
+
+/* Sin reset universal propio: el preflight de Tailwind 4 ya pone margin/padding a 0 y
+   un `* { margin:0 }` fuera de capa pisaría todas las utilidades (mb-*, py-*…). */
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #fff;
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+/* Tailwind 4 deja los botones con cursor por defecto; la landing siempre los tuvo como enlaces. */
+button:not(:disabled) { cursor: pointer; }
+
+.font-display { font-family: 'Syne', sans-serif; }
+.text-gold    { color: var(--gold); }
+.bg-navy      { background-color: var(--navy); }
+.bg-cream     { background-color: var(--cream); }
+
+.gradient-cta      { background: linear-gradient(135deg, #E8A33D 0%, #F5C983 100%); }
+.gradient-whatsapp { background: linear-gradient(135deg, #2E7C99 0%, #5FA8C4 100%); }
+
+[x-cloak] { display: none !important; }
+
+/* ── Sección 1: apertura oscura + preguntas ── */
+.apertura {
+  background:
+    radial-gradient(900px 600px at 50% 12%, rgba(232,163,61,0.10), transparent 60%),
+    radial-gradient(700px 500px at 50% 100%, rgba(46,124,153,0.14), transparent 60%),
+    linear-gradient(180deg, #0E0B16 0%, #171128 55%, #0E0B16 100%);
+  color: #fff;
+}
+.q-lead {
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.42);
+  margin-bottom: 0.75rem;
+}
+.q-main {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  line-height: 1.12;
+  color: #fff;
+  font-size: clamp(1.9rem, 6vw, 3.4rem);
+}
+.q-dots {
+  color: rgba(232,163,61,0.55);
+  letter-spacing: 0.5em;
+  font-size: 0.9rem;
+  padding-left: 0.5em;
+}
+.scroll-hint { animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+/* Mantiene la continuidad narrativa sin eliminar el aire visual entre bloques. */
+.narrative-flow { row-gap: 5.5rem; }
+.story-section { padding-block: 3.5rem; }
+.opening-screen { min-height: 80vh; }
+@media (min-width: 640px) {
+  .narrative-flow { row-gap: 7rem; }
+  .story-section { padding-block: 5rem; }
+}
+
+/* ── Revelado progresivo al hacer scroll ── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── Portada / autor ── */
+.product-img {
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: 1.25rem;
+  filter: drop-shadow(0 24px 52px rgba(232,163,61,.30));
+}
+.author-img { box-shadow: 0 24px 56px rgba(232,163,61,.28); border: 6px solid #fff; }
+
+.logo-mark {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  background: radial-gradient(circle at 50% 45%, #F5C983 0%, #E8A33D 35%, #2E7C99 75%, #0E0B16 100%);
+}
+
+.divider-gold {
+  width: 64px; height: 3px; border-radius: 999px; margin: 0 auto 1.5rem;
+  background: linear-gradient(90deg, var(--gold), var(--gold-l));
+}
+
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(232,163,61,0.40); }
+  50%       { box-shadow: 0 4px 44px rgba(232,163,61,0.70); }
+}
+.cta-pulse { animation: cta-glow 2.2s ease infinite; }
+
+/* ── Reseñas ── */
+.review-card {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 1rem; padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(232,163,61,0.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.review-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(232,163,61,0.15); }
+.format-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: rgba(46,124,153,0.08); border: 1px solid rgba(46,124,153,0.25);
+  border-radius: 999px; padding: 0.3rem 0.8rem; font-size: 0.75rem; font-weight: 600; color: var(--teal);
+}
+.tab-active   { border-bottom: 2px solid var(--gold); color: var(--gold); font-weight: 600; }
+.tab-inactive { color: #71717a; font-weight: 500; }
+.tab-inactive:hover { color: #3f3f46; }
+
+/* ── FAQ ── */
+details summary { list-style: none; cursor: pointer; }
+details summary::-webkit-details-marker { display: none; }
+details[open] summary .icon-chevron { transform: rotate(180deg); }
+.icon-chevron { transition: transform .25s ease; }
+
+/* ── Sección país + tiendas ── */
+.pais-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.35rem; padding: 1.1rem 0.75rem; border-radius: 1rem;
+  background: #fff; border: 1.5px solid #EBEAEA; cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  font-weight: 600; color: var(--navy);
+}
+.pais-btn:hover { transform: translateY(-3px); border-color: rgba(232,163,61,0.45); box-shadow: 0 10px 26px rgba(232,163,61,0.14); }
+.pais-btn .bandera { font-size: 1.9rem; line-height: 1; }
+
+.platform-card {
+  background: #fff; border: 1px solid #EBEAEA; border-radius: 1rem; padding: 1.1rem 1.25rem;
+  display: flex; align-items: center; gap: 0.9rem;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.platform-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(232,163,61,0.14); border-color: rgba(232,163,61,0.35); }
+.platform-logo { width: 76px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: flex-start; }
+.platform-logo img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+.format-pill {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; white-space: nowrap;
+}
+.format-pill--fisico  { background: rgba(46,124,153,0.10); color: var(--teal); }
+.format-pill--digital { background: rgba(232,163,61,0.14); color: var(--gold-dark); }
+.format-pill--ambos   { background: linear-gradient(90deg, rgba(46,124,153,0.10) 50%, rgba(232,163,61,0.14) 50%); color: var(--navy); }
+
+/* ── Compra directa del EPUB (tarjeta destacada) ── */
+.compra-directa {
+  position: relative;
+  background: #fff;
+  border: 1.5px solid rgba(232,163,61,0.45);
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.35rem 1.35rem;
+  box-shadow: 0 12px 36px rgba(232,163,61,0.16);
+  text-align: left;
+}
+.compra-directa::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(135deg, rgba(232,163,61,0.07), transparent 55%);
+}
+.compra-directa > * { position: relative; }
+.compra-ribbon {
+  position: absolute; top: -0.8rem; left: 1.25rem;
+  background: linear-gradient(135deg, #E8A33D 0%, #F5C983 100%);
+  color: #fff; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.3rem 0.75rem; border-radius: 999px; box-shadow: 0 6px 16px rgba(232,163,61,0.35);
+}
+.compra-thumb {
+  width: 84px; height: 126px; object-fit: cover; border-radius: 0.6rem; flex-shrink: 0;
+  box-shadow: 0 10px 24px rgba(14,11,22,0.22);
+}
+.compra-precio {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem; line-height: 1; color: var(--navy);
+  white-space: nowrap;
+}
+.compra-precio small { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.8rem; color: rgba(14,11,22,0.5); margin-left: 0.35rem; letter-spacing: 0.04em; }
+.compra-check { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.8rem; color: rgba(14,11,22,0.7); }
+.compra-check svg { flex-shrink: 0; margin-top: 0.15rem; }
+.compra-input {
+  width: 100%; border: 1.5px solid #E5E1D8; border-radius: 0.75rem; padding: 0.8rem 1rem;
+  font-size: 0.95rem; color: var(--navy); background: #FFFDF9; outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.compra-input::placeholder { color: rgba(14,11,22,0.38); }
+.compra-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(232,163,61,0.16); }
+.compra-input[aria-invalid="true"] { border-color: #D9534F; }
+.compra-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  color: #fff; font-weight: 800; font-size: 1rem; padding: 0.95rem 1.25rem; border-radius: 0.85rem; border: 0;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.compra-btn:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); }
+.compra-btn:disabled { opacity: .6; cursor: wait; }
+.pasarela-logo { height: 22px; width: auto; }
+.separador-o {
+  display: flex; align-items: center; gap: 0.75rem; color: rgba(14,11,22,0.4);
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.separador-o::before, .separador-o::after { content: ''; flex: 1; height: 1px; background: rgba(14,11,22,0.12); }
+
+/* ── Garantías (fila de confianza) ── */
+.trust-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.trust-item {
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem; text-align: center;
+  font-size: 0.68rem; font-weight: 600; color: rgba(14,11,22,0.6); line-height: 1.25;
+}
+.trust-item svg { color: var(--gold-dark); }
+
+/* ── Página de gracias ── */
+.gracias-card {
+  background: #fff; border-radius: 1.25rem; padding: 2rem 1.5rem;
+  box-shadow: 0 18px 48px rgba(14,11,22,0.10); border: 1px solid rgba(232,163,61,0.25);
+}
+.spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 4px solid rgba(232,163,61,0.2); border-top-color: var(--gold);
+  animation: spin 0.9s linear infinite; margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.paso { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.85rem; color: rgba(14,11,22,0.72); }
+.paso-num {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(232,163,61,0.14); color: var(--gold-dark); font-weight: 800; font-size: 0.72rem;
+}
+
+/* ── Sticky CTA ── */
+#sticky-cta { transform: translateY(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+#sticky-cta.visible { transform: translateY(0); }
+
+/* ── Modales legales ── */
+.legal-overlay { background: rgba(14,11,22,0.60); backdrop-filter: blur(4px); }
+.legal-panel { background: #fff; border-radius: 1.25rem; box-shadow: 0 24px 72px rgba(14,11,22,0.28); max-height: 88vh; display: flex; flex-direction: column; }
+.legal-body { overflow-y: auto; flex: 1; }
+.legal-body::-webkit-scrollbar { width: 4px; }
+.legal-body::-webkit-scrollbar-thumb { background: rgba(232,163,61,0.35); border-radius: 4px; }
+.legal-section { border-left: 3px solid var(--gold); padding-left: 1rem; margin-bottom: 1.5rem; }
+.legal-section-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(232,163,61,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.legal-tag { display: inline-block; background: rgba(232,163,61,0.10); color: var(--gold-dark); border: 1px solid rgba(232,163,61,0.25); border-radius: 999px; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.6rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.social-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); transition: background .2s ease; }
+.social-btn:hover { background: var(--gold); }

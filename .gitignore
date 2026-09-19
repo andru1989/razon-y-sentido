@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.*
+# Nunca versionar el libro ni secretos
+*.epub
+private/

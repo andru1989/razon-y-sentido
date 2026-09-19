@@ -1,0 +1,27 @@
+{
+  "name": "razon-y-sentido",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Landing y tienda del libro «El tiempo como entidad ontológica» — Astro + pagos con Mercado Pago y PayPal",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "alpinejs": "3.17.3",
+    "astro": "7.3.3",
+    "tailwindcss": "4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/alpinejs": "3.13.11",
+    "typescript": "5.9.3"
+  }
+}

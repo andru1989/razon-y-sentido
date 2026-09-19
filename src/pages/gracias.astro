@@ -1,0 +1,103 @@
+---
+// Página de retorno tras el pago. Consulta /api/pedido.php hasta que el pedido
+// quede "pagado" (o falle), muestra la descarga y dispara Purchase/purchase.
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import LegalModals from '../components/LegalModals.astro';
+import { SITIO, LIBRO } from '../data/libro';
+---
+<Base path="/gracias" title="Tu libro · El Tiempo como Entidad Ontológica" description="Confirmación de compra y descarga del libro digital." noindex={true}>
+  <main class="min-h-screen flex flex-col" style="background:var(--cream);" x-data="gracias()">
+    <!-- Cabecera oscura, misma identidad que la apertura -->
+    <header class="apertura py-10 px-6 text-center">
+      <a href="/" class="inline-flex items-center justify-center gap-2.5">
+        <span class="logo-mark"></span>
+        <span class="font-display text-white text-lg">Razón y <span class="text-gold">Sentido</span></span>
+      </a>
+    </header>
+
+    <section class="flex-1 py-12 px-4 sm:px-6">
+      <div class="max-w-lg mx-auto">
+
+        <!-- Cargando / confirmando -->
+        <div class="gracias-card text-center" x-show="estado === 'cargando'">
+          <div class="spinner mb-5"></div>
+          <h1 class="font-display text-2xl mb-2" style="color:var(--navy);">Confirmando tu pago…</h1>
+          <p class="text-sm" style="color:rgba(14,11,22,0.6);">Esto tarda solo unos segundos. No cierres esta página.</p>
+        </div>
+
+        <!-- Pagado (x-if: solo se monta cuando hay pedido, así nunca se evalúa pedido.* sobre null) -->
+        <template x-if="estado === 'pagado' && pedido">
+        <div class="gracias-card">
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-full gradient-cta flex items-center justify-center mx-auto mb-4">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <h1 class="font-display text-2xl sm:text-3xl mb-2" style="color:var(--navy);">¡Gracias! Tu libro está listo.</h1>
+            <p class="text-sm mb-6" style="color:rgba(14,11,22,0.6);">
+              <span x-text="'«' + titulo + '»'"></span> en formato EPUB.
+              También enviamos el enlace a <strong x-text="pedido.email"></strong>.
+            </p>
+            <a :href="pedido.descarga_url" class="compra-btn gradient-cta cta-pulse" download data-descarga>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>
+              Descargar el libro (EPUB)
+            </a>
+            <p class="text-[11px] mt-3" style="color:rgba(14,11,22,0.45);">
+              Enlace válido <span x-text="pedido.dias_validez"></span> días · hasta <span x-text="pedido.descargas_max"></span> descargas · Pedido <span class="font-mono" x-text="pedido.id_corto"></span>
+            </p>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-amber-100">
+            <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color:var(--gold-dark);">Cómo leerlo</p>
+            <div class="space-y-3">
+              <div class="paso"><span class="paso-num">1</span><p><strong>Celular o tablet:</strong> abre el archivo con Apple Libros (iPhone/iPad) o Google Play Libros (Android). También sirve Kobo o Lithium.</p></div>
+              <div class="paso"><span class="paso-num">2</span><p><strong>Kindle:</strong> entra a <a href="https://www.amazon.com/sendtokindle" target="_blank" rel="noopener" class="font-semibold" style="color:var(--teal);">amazon.com/sendtokindle</a> y sube el EPUB; aparece en tu biblioteca en minutos.</p></div>
+              <div class="paso"><span class="paso-num">3</span><p><strong>Computador:</strong> ábrelo con Calibre, Thorium Reader o directamente en el navegador Microsoft Edge.</p></div>
+            </div>
+          </div>
+
+          <div class="mt-6 rounded-xl p-4 flex items-start gap-3" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+            <span class="text-lg">💬</span>
+            <p class="text-sm" style="color:rgba(14,11,22,0.75);">¿No llega el correo o no abre el archivo? Escríbenos al WhatsApp <a href={SITIO.whatsapp} target="_blank" rel="noopener" class="font-semibold" style="color:var(--gold-dark);">{SITIO.whatsappTexto}</a> con tu número de pedido y lo resolvemos.</p>
+          </div>
+        </div>
+        </template>
+
+        <!-- Pendiente (PSE, efectivo, revisión) -->
+        <div class="gracias-card text-center" x-show="estado === 'pendiente'" x-cloak>
+          <div class="text-5xl mb-4">⏳</div>
+          <h1 class="font-display text-2xl mb-2" style="color:var(--navy);">Tu pago está en proceso</h1>
+          <p class="text-sm mb-5" style="color:rgba(14,11,22,0.65);">
+            Algunos medios de pago (PSE, efectivo, revisión de seguridad) tardan unos minutos u horas en confirmarse.
+            En cuanto la pasarela lo apruebe, te enviaremos el enlace de descarga a <strong x-text="pedido && pedido.email"></strong>.
+          </p>
+          <p class="text-xs mb-6" style="color:rgba(14,11,22,0.5);">Puedes guardar esta página y volver más tarde: se actualiza sola.</p>
+          <button type="button" @click="reintentar()" class="text-sm font-semibold" style="color:var(--teal);">Volver a comprobar ahora</button>
+        </div>
+
+        <!-- Fallido / cancelado -->
+        <div class="gracias-card text-center" x-show="estado === 'fallido'" x-cloak>
+          <div class="text-5xl mb-4">😕</div>
+          <h1 class="font-display text-2xl mb-2" style="color:var(--navy);">El pago no se completó</h1>
+          <p class="text-sm mb-6" style="color:rgba(14,11,22,0.65);">No se realizó ningún cargo. Puedes intentarlo de nuevo con otro medio de pago o conseguir el libro en una librería.</p>
+          <a :href="'/?pais=' + (pedido ? pedido.pais : '') + '#consigue'" class="compra-btn gradient-cta">Intentar de nuevo</a>
+        </div>
+
+        <!-- Sin pedido / error -->
+        <div class="gracias-card text-center" x-show="estado === 'error'" x-cloak>
+          <div class="text-5xl mb-4">🔎</div>
+          <h1 class="font-display text-2xl mb-2" style="color:var(--navy);">No encontramos este pedido</h1>
+          <p class="text-sm mb-6" style="color:rgba(14,11,22,0.65);">Si ya pagaste, escríbenos por WhatsApp con el correo que usaste y te enviamos el libro de inmediato.</p>
+          <a href={SITIO.whatsapp} target="_blank" rel="noopener" class="compra-btn gradient-whatsapp">Escribir por WhatsApp</a>
+          <a href="/" class="block text-sm font-semibold mt-4" style="color:var(--teal);">Volver a la página del libro</a>
+        </div>
+
+      </div>
+    </section>
+
+    <Footer />
+    <LegalModals />
+  </main>
+
+  <script is:inline type="application/json" id="datos-gracias" set:html={JSON.stringify({ titulo: LIBRO.titulo, isbn: LIBRO.isbn }).replace(/</g, '\\u003c')}></script>
+</Base>

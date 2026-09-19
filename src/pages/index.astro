@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import Apertura from '../components/Apertura.astro';
+import Libro from '../components/Libro.astro';
+import Resenas from '../components/Resenas.astro';
+import Faq from '../components/Faq.astro';
+import Consigue from '../components/Consigue.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import LegalModals from '../components/LegalModals.astro';
+import { LIBRO, SITIO, ofertasSchema } from '../data/libro';
+
+const schema = {
+  '@context': 'https://schema.org/',
+  '@type': 'Book',
+  name: LIBRO.titulo,
+  alternateName: LIBRO.subtitulo,
+  author: { '@type': 'Person', name: LIBRO.autor },
+  publisher: { '@type': 'Organization', name: LIBRO.editorial },
+  isbn: LIBRO.isbn,
+  inLanguage: 'es',
+  image: `${SITIO.url}/img/portada.jpeg`,
+  url: SITIO.url,
+  description: 'Un ensayo filosófico que propone al tiempo como una entidad ontológica en sí misma, tendiendo puentes entre la física moderna y la filosofía para repensar una de las grandes preguntas de la existencia.',
+  genre: ['Filosofía', 'Metafísica'],
+  offers: ofertasSchema(),
+};
+---
+<Base path="/">
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')}></script>
+  </Fragment>
+
+  <Apertura />
+  <Libro />
+  <Resenas />
+  <Faq />
+  <Consigue />
+  <Footer />
+  <StickyCta />
+  <LegalModals />
+</Base>

@@ -1,0 +1,33 @@
+---
+// SECCIÓN 4 · PREGUNTAS FRECUENTES
+const preguntas = [
+  { q: '¿Necesito saber filosofía?', a: 'No. Solo tener curiosidad.' },
+  { q: '¿Es difícil de leer?', a: 'No. Las ideas avanzan paso a paso.' },
+  { q: '¿Está disponible en eBook?', a: 'Sí. Puedes comprar la versión digital (EPUB) aquí mismo y descargarla al instante, o conseguirla en las librerías digitales de tu país.' },
+  { q: '¿Cómo recibo el libro digital?', a: 'En cuanto se confirma el pago, la descarga aparece en pantalla y también te enviamos el enlace al correo que indicaste. El enlace queda activo durante 30 días.' },
+  { q: '¿En qué dispositivos puedo leerlo?', a: 'El EPUB se abre en celulares y tablets (Apple Libros, Google Play Libros, Kobo), en Kindle usando «Enviar a Kindle» y en computador con Calibre, Thorium o el navegador Edge.' },
+  { q: '¿Dónde consigo el libro físico?', a: 'En las librerías asociadas de tu país, que aparecen justo debajo al elegir tu país.' },
+];
+---
+<section id="faq" class="story-section py-16 bg-white">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <div class="divider-gold"></div>
+      <h2 class="font-display text-2xl sm:text-3xl" style="color:var(--navy);">Preguntas frecuentes</h2>
+    </div>
+
+    <div class="space-y-1">
+      {preguntas.map((p, i) => (
+        <details class={`group py-4 ${i < preguntas.length - 1 ? 'border-b border-amber-100' : ''}`}>
+          <summary class="flex items-center justify-between text-sm font-semibold cursor-pointer" style="color:var(--navy);">
+            {p.q}
+            <svg class="icon-chevron w-5 h-5 text-zinc-400 flex-shrink-0 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <div class="mt-3 text-sm text-zinc-600 leading-relaxed pr-8">
+            {p.a}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

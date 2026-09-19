@@ -1,0 +1,36 @@
+# ── tiempo.razonysentido.com · Hostinger (LiteSpeed) ──
+Options -Indexes
+
+# Ningún archivo oculto se sirve (incluye el estado del despliegue FTP)
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# La librería PHP solo se incluye desde los endpoints, nunca se ejecuta directa
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^api/lib/ - [F,L]
+  # Rutas limpias: /gracias → /gracias/index.html (Astro genera carpetas)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^([^.]+?)/?$ /$1/index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Assets con hash en el nombre: caché larga
+  <FilesMatch "\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(jpe?g|png|svg|webp|ico)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.(html|json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+AddType application/epub+zip .epub
+AddDefaultCharset UTF-8

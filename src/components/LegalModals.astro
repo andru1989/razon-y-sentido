@@ -1,0 +1,160 @@
+---
+import { SITIO } from '../data/libro';
+---
+<!-- MODAL — TÉRMINOS Y CONDICIONES -->
+<div id="modal-terminos" class="fixed inset-0 z-[70] items-center justify-center p-4 legal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="titulo-terminos">
+  <div class="legal-panel w-full max-w-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-amber-100 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-cta flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div>
+          <h2 id="titulo-terminos" class="font-display text-lg" style="color:var(--navy);">Términos y Condiciones</h2>
+          <p class="text-xs text-zinc-400">Razón y Sentido · Última actualización: septiembre 2026</p>
+        </div>
+      </div>
+      <button type="button" data-legal-close="terminos" aria-label="Cerrar" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors text-zinc-400 hover:text-zinc-600">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="legal-body px-6 py-6 space-y-6">
+      <div class="rounded-xl p-4" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <p class="text-sm leading-relaxed" style="color:rgba(14,11,22,0.75);">Esta página vende la versión digital (EPUB) del libro <strong>El tiempo como entidad ontológica</strong>, de Luis Amin Velasco Cobos, con pago procesado por Mercado Pago (Colombia) o PayPal (resto del mundo). Para el libro físico te redirigimos a librerías externas.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📚</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">1. Sobre el libro</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-2"><strong>El tiempo como entidad ontológica</strong> es un ensayo filosófico de Luis Amin Velasco Cobos, publicado por la editorial Universo de Letras, disponible en formato físico (ISBN 9791387717483) y digital (ISBN 9791387716752).</p>
+        <span class="legal-tag">ISBN 9791387717483</span>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🛒</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">2. Compra del libro digital</h3>
+        </div>
+        <ul class="text-sm text-zinc-600 leading-relaxed space-y-1.5">
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> El precio se muestra en la moneda de tu país antes de pagar e incluye los impuestos aplicables.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> El pago se realiza en la página segura de Mercado Pago o PayPal. No almacenamos datos de tarjetas ni de cuentas bancarias.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Al confirmarse el pago recibes un enlace de descarga en pantalla y en el correo que indicaste, válido durante 30 días y hasta 5 descargas.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Algunos medios de pago (PSE, efectivo) tardan en aprobarse; en ese caso el enlace se envía cuando la pasarela confirma el pago.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> El archivo es para uso personal. No está permitido redistribuirlo, revenderlo ni publicarlo.</li>
+        </ul>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📦</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">3. Libro físico y librerías externas</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">El libro físico se compra en las librerías asociadas de cada país (Buscalibre, Mercado Libre, Agapea, Amazon y otras). Cada una gestiona su propio proceso de pago, facturación, envío y devoluciones, y sus precios no son fijados por este sitio.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🔄</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">4. Devoluciones del libro digital</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Por tratarse de contenido digital de entrega inmediata, no es posible devolverlo una vez descargado. Si el archivo no llega, llega dañado o no puedes abrirlo, escríbenos por WhatsApp y lo resolvemos: te reenviamos el enlace o, si no hay solución, te reembolsamos el pago.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>⚖️</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">5. Marco legal aplicable</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-2">Estos términos se rigen por la legislación colombiana, incluyendo la <strong>Ley 1480 de 2011</strong> (Estatuto del Consumidor). Las compras en plataformas externas se rigen por los términos propios de cada una.</p>
+        <span class="legal-tag">Ley 1480 / 2011</span>
+      </div>
+
+      <div class="rounded-xl p-4 flex items-center gap-3" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-2.91-8.63A2 2 0 012.18 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+        <p class="text-sm" style="color:rgba(14,11,22,0.75);"><strong>¿Tienes preguntas?</strong> Escríbenos al WhatsApp <a href={SITIO.whatsapp} target="_blank" rel="noopener" class="font-semibold" style="color:var(--gold);">{SITIO.whatsappTexto}</a>.</p>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0 px-6 py-4 border-t border-amber-100">
+      <button type="button" data-legal-close="terminos" class="block w-full gradient-cta text-white font-bold text-sm py-3 rounded-xl text-center hover:opacity-90 transition-opacity">Entendido — Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL — POLÍTICA DE PRIVACIDAD -->
+<div id="modal-privacidad" class="fixed inset-0 z-[70] items-center justify-center p-4 legal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="titulo-privacidad">
+  <div class="legal-panel w-full max-w-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-amber-100 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl gradient-cta flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h2 id="titulo-privacidad" class="font-display text-lg" style="color:var(--navy);">Política de Privacidad</h2>
+          <p class="text-xs text-zinc-400">Ley 1581 de 2012 · Habeas Data</p>
+        </div>
+      </div>
+      <button type="button" data-legal-close="privacidad" aria-label="Cerrar" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors text-zinc-400 hover:text-zinc-600">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="legal-body px-6 py-6 space-y-6">
+      <div class="rounded-xl p-4" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <p class="text-sm leading-relaxed" style="color:rgba(14,11,22,0.75);">Respetamos y protegemos tu privacidad. Esta política explica qué datos recopilamos y para qué los usamos, en cumplimiento de la <strong>Ley 1581 de 2012</strong> y el <strong>Decreto 1377 de 2013</strong> de la República de Colombia.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>📋</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">1. Datos que recopilamos</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Si compras el libro digital guardamos tu correo electrónico, el país elegido, el importe y la referencia del pago que nos entrega Mercado Pago o PayPal. No recibimos ni almacenamos datos de tarjetas ni de cuentas bancarias: el pago se realiza en la página de la pasarela. Si nos escribes por WhatsApp, esos datos quedan dentro de esa conversación. Además usamos Meta Pixel y Google Analytics para medir el rendimiento de la página (clics, navegación, compras), sin recolectar datos que te identifiquen personalmente.</p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>🎯</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">2. Finalidad del tratamiento</h3>
+        </div>
+        <ul class="text-sm text-zinc-600 leading-relaxed space-y-1.5">
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Entregarte el libro digital y reenviarte el enlace si lo necesitas.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Atención al cliente, reclamaciones y reembolsos.</li>
+          <li class="flex gap-2"><span style="color:var(--gold);">•</span> Medir el rendimiento y la navegación de esta página.</li>
+        </ul>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="legal-section-icon"><span>💬</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">3. Comunicaciones</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed">Solo te escribimos al correo para entregarte el libro o resolver un problema con tu compra. <strong>No compartimos tus datos con terceros ajenos al pago, no vendemos bases de datos ni enviamos publicidad no solicitada.</strong></p>
+      </div>
+
+      <div class="legal-section">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="legal-section-icon"><span>✅</span></div>
+          <h3 class="font-display text-base" style="color:var(--navy);">4. Tus derechos — Habeas Data</h3>
+        </div>
+        <p class="text-sm text-zinc-600 leading-relaxed mb-3">Conforme a la <strong>Ley 1581 de 2012</strong>, tienes derecho a conocer, actualizar, rectificar y suprimir los datos que nos hayas entregado. Para ejercer cualquiera de estos derechos, escríbenos al WhatsApp de contacto.</p>
+        <div class="flex gap-2 flex-wrap">
+          <span class="legal-tag">Ley 1581 / 2012</span>
+          <span class="legal-tag">Decreto 1377 / 2013</span>
+        </div>
+      </div>
+
+      <div class="rounded-xl p-4 flex items-center gap-3" style="background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.20);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-2.91-8.63A2 2 0 012.18 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.46-.46a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+        <p class="text-sm" style="color:rgba(14,11,22,0.75);"><strong>Responsable del tratamiento:</strong> Luis Amin Velasco Cobos · WhatsApp <a href={SITIO.whatsapp} target="_blank" rel="noopener" class="font-semibold" style="color:var(--gold);">{SITIO.whatsappTexto}</a></p>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0 px-6 py-4 border-t border-amber-100">
+      <button type="button" data-legal-close="privacidad" class="block w-full gradient-cta text-white font-bold text-sm py-3 rounded-xl text-center hover:opacity-90 transition-opacity">Entendido — Cerrar</button>
+    </div>
+  </div>
+</div>
