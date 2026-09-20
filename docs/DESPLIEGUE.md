@@ -4,7 +4,7 @@
 
 ```
 Landing (#consigue)
-  └─ elige país → tarjeta "Comprar EPUB" (precio y pasarela según public/api/catalogo.json)
+  └─ elige país → tarjeta "Comprar libro digital" (precio y pasarela según public/api/catalogo.json)
        └─ POST /api/checkout.php { pais, email }
             ├─ crea el pedido (SQLite en private/pedidos.sqlite)
             ├─ Colombia → preferencia de Mercado Pago · resto → orden de PayPal

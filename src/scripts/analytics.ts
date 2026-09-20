@@ -131,7 +131,7 @@ function unaVez(clave: string, cb: () => void) {
 }
 
 /* ───────── COMPRA DIRECTA ─────────
-   InitiateCheckout / begin_checkout al pulsar "Comprar EPUB", y
+   InitiateCheckout / begin_checkout al pulsar "Comprar libro digital", y
    Purchase / purchase en /gracias cuando el pedido queda pagado. */
 export function trackInicioCheckout(datos: { pais: string; proveedor: string; value: number; currency: string }) {
   const item = [itemLibro({ item_variant: 'epub', price: datos.value })];

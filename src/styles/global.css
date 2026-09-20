@@ -180,7 +180,7 @@ details[open] summary .icon-chevron { transform: rotate(180deg); }
   box-shadow: 0 10px 24px rgba(14,11,22,0.22);
 }
 .compra-precio {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem; line-height: 1; color: var(--navy);
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.45rem, 7vw, 2rem); line-height: 1; color: var(--navy);
   white-space: nowrap;
 }
 .compra-precio small { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.8rem; color: rgba(14,11,22,0.5); margin-left: 0.35rem; letter-spacing: 0.04em; }

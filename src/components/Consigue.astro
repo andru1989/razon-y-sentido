@@ -91,7 +91,10 @@ const catalogoJson = JSON.stringify(PAISES).replace(/</g, '\\u003c');
 
           <button type="submit" class="compra-btn gradient-cta mt-3" :disabled="enviando"
             data-checkout-btn>
-            <span x-show="!enviando" x-text="'Comprar EPUB · ' + directo.precio_texto"></span>
+            <span x-show="!enviando" class="flex flex-col items-center leading-tight">
+              <span>Comprar libro digital</span>
+              <span class="text-xs font-semibold opacity-90 tracking-wide" x-text="directo.precio_texto"></span>
+            </span>
             <span x-show="enviando" x-cloak>Preparando tu pago…</span>
             <svg x-show="!enviando" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
