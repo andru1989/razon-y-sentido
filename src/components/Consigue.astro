@@ -4,13 +4,13 @@
 // del navegador (es-CO, es-MX…) y, si tampoco, muestra el selector.
 // Por país: tarjeta destacada de compra directa del EPUB (Mercado Pago en
 // Colombia, PayPal en el resto) + librerías externas para el libro físico.
-import { PAISES, LIBRO } from '../data/libro';
+import { PAISES, LIBRO, PAIS_POR_DEFECTO } from '../data/libro';
 
 // El catálogo viaja al cliente como JSON: Alpine lo lee en componentes.ts.
 const catalogoJson = JSON.stringify(PAISES).replace(/</g, '\\u003c');
 ---
 <section id="consigue" class="story-section py-16 sm:py-20" style="background:var(--cream);"
-  x-data="tiendas()">
+  x-data="tiendas()" data-pais-defecto={PAIS_POR_DEFECTO}>
   <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
     <div class="divider-gold"></div>
     <h2 class="font-display text-3xl sm:text-4xl mb-3" style="color:var(--navy);">Consigue el <span class="text-gold">libro</span></h2>
@@ -24,8 +24,14 @@ const catalogoJson = JSON.stringify(PAISES).replace(/</g, '\\u003c');
       <span x-text="aviso"></span>
     </div>
 
-    <!-- Selector de país -->
-    <div id="selector-pais" x-show="!pais">
+    <!-- Detectando el país (IP → zona horaria → idioma → país por defecto) -->
+    <div x-show="!pais && detectando" class="py-10 flex flex-col items-center gap-3" aria-live="polite">
+      <div class="spinner" style="width:32px;height:32px;border-width:3px;"></div>
+      <p class="text-xs font-semibold uppercase tracking-widest" style="color:rgba(14,11,22,0.45);">Detectando tu país…</p>
+    </div>
+
+    <!-- Selector de país: solo si el visitante pulsa "Cambiar país" -->
+    <div id="selector-pais" x-show="!pais && !detectando" x-cloak>
       <p class="text-sm font-bold uppercase tracking-widest mb-5" style="color:var(--gold-dark);">Elige tu país</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <template x-for="(datos, codigo) in paises" :key="codigo">

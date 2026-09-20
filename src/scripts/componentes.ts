@@ -46,7 +46,26 @@ function guardarPais(codigo: string) {
   try { codigo ? localStorage.setItem(CLAVE_PAIS, codigo) : localStorage.removeItem(CLAVE_PAIS); } catch { /* sin almacenamiento */ }
 }
 
-// País sugerido por el idioma del navegador (es-CO → co). Último recurso.
+// País por zona horaria del dispositivo: fiable incluso sin red y en local.
+const ZONAS: Record<string, string> = {
+  'America/Bogota': 'co',
+  'Europe/Madrid': 'es', 'Africa/Ceuta': 'es', 'Atlantic/Canary': 'es',
+  'America/Mexico_City': 'mx', 'America/Cancun': 'mx', 'America/Merida': 'mx', 'America/Monterrey': 'mx',
+  'America/Matamoros': 'mx', 'America/Chihuahua': 'mx', 'America/Ciudad_Juarez': 'mx', 'America/Ojinaga': 'mx',
+  'America/Hermosillo': 'mx', 'America/Mazatlan': 'mx', 'America/Bahia_Banderas': 'mx', 'America/Tijuana': 'mx',
+  'America/Buenos_Aires': 'ar', 'America/Cordoba': 'ar', 'America/Mendoza': 'ar',
+};
+function paisPorZonaHoraria(catalogo: Catalogo): string {
+  try {
+    const zona = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const codigo = zona.startsWith('America/Argentina/') ? 'ar' : ZONAS[zona] || '';
+    return catalogo[codigo] ? codigo : '';
+  } catch {
+    return '';
+  }
+}
+
+// País sugerido por el idioma del navegador (es-CO → co).
 function paisPorIdioma(catalogo: Catalogo): string {
   const idiomas = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]) || [];
   for (const idioma of idiomas) {
@@ -68,6 +87,7 @@ export function registrarComponentes(Alpine: AlpineType) {
     error: '',
     aviso: '',
     enviando: false,
+    detectando: true,
 
     init() {
       this.paises = leerJson<Catalogo>('catalogo-paises', {});
@@ -79,7 +99,8 @@ export function registrarComponentes(Alpine: AlpineType) {
       }
 
       // Prioridad: 1) ?pais= de la URL (campañas) · 2) elección previa guardada ·
-      // 3) país por IP (/api/pais.php) · 4) idioma del navegador. Siempre se puede cambiar.
+      // 3) IP (/api/pais.php) · 4) zona horaria · 5) idioma · 6) país por defecto.
+      // El selector solo aparece si el visitante pulsa "Cambiar país".
       const deUrl = (q.get('pais') || '').toLowerCase();
       if (this.paises[deUrl]) {
         this.fijarPais(deUrl, 'url');
@@ -94,18 +115,23 @@ export function registrarComponentes(Alpine: AlpineType) {
     },
 
     async detectarPais() {
+      this.detectando = true;
       const porIp = await paisPorIp();
-      if (this.pais) return; // el visitante ya eligió mientras tanto
-      if (porIp && this.paises[porIp]) {
-        this.fijarPais(porIp, 'ip');
-        return;
-      }
-      const porIdioma = paisPorIdioma(this.paises);
-      if (porIdioma) this.fijarPais(porIdioma, 'idioma');
+      if (this.pais) { this.detectando = false; return; } // el visitante ya eligió mientras tanto
+      const candidatos: Array<[string, string]> = [
+        [porIp, 'ip'],
+        [paisPorZonaHoraria(this.paises), 'zona_horaria'],
+        [paisPorIdioma(this.paises), 'idioma'],
+        [(this.$el as HTMLElement).dataset.paisDefecto || '', 'por_defecto'],
+      ];
+      const elegido = candidatos.find(([c]) => c && this.paises[c]);
+      if (elegido) this.fijarPais(elegido[0], elegido[1]);
+      this.detectando = false;
     },
 
     fijarPais(codigo: string, origen: string) {
       this.pais = codigo;
+      this.detectando = false;
       emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: codigo, origen });
     },
 
@@ -132,6 +158,7 @@ export function registrarComponentes(Alpine: AlpineType) {
     },
     cambiarPais() {
       this.pais = '';
+      this.detectando = false;
       this.error = '';
       this.aviso = '';
       guardarPais('');

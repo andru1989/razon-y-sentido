@@ -34,6 +34,7 @@ export interface Pais {
 
 export const LIBRO = catalogo.libro;
 export const DESCARGA = catalogo.descarga;
+export const PAIS_POR_DEFECTO = catalogo.pais_por_defecto as CodigoPais;
 
 export const SITIO = {
   url: 'https://tiempo.razonysentido.com',

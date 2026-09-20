@@ -15,6 +15,7 @@
     "dias_validez": 30,
     "descargas_max": 5
   },
+  "pais_por_defecto": "co",
   "paises": {
     "co": {
       "nombre": "Colombia",
