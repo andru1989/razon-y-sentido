@@ -189,7 +189,7 @@ export function registrarComponentes(Alpine: AlpineType) {
         window.location.assign(data.url);
       } catch (e) {
         const msg = e instanceof Error ? e.message : 'No pudimos iniciar el pago.';
-        this.error = msg + ' Inténtalo de nuevo o escríbenos por WhatsApp.';
+        this.error = msg + ' Inténtalo de nuevo en un momento o escríbenos por WhatsApp.';
         this.enviando = false;
       }
     },

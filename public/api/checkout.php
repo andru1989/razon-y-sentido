@@ -59,7 +59,7 @@ try {
 } catch (Throwable $e) {
     registrar('errores', 'checkout ' . $pedido['id'] . ': ' . $e->getMessage());
     pedido_marcar($pedido['id'], 'fallido', 'error_pasarela');
-    json_error('La pasarela de pago no respondió. Inténtalo en un momento.', 502);
+    json_error('La pasarela de pago no respondió.', 502);
 }
 
 pedido_actualizar($pedido['id'], ['proveedor_ref' => $res['id']]);
