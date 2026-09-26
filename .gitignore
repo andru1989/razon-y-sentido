@@ -9,3 +9,5 @@ npm-debug.log*
 # Nunca versionar el libro ni secretos
 *.epub
 private/
+# PHP local para pruebas (npm run local)
+.tools/

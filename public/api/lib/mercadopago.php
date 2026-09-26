@@ -48,12 +48,16 @@ function mp_crear_preferencia(array $pedido): array
             'pending' => "$sitio/gracias?pedido=$id",
             'failure' => "$sitio/gracias?pedido=$id&pago=cancelado",
         ],
-        'auto_return' => 'approved',
-        'notification_url' => "$sitio/api/webhook-mercadopago.php?pedido=$id",
         'statement_descriptor' => 'RAZONYSENTIDO',
         'binary_mode' => false, // permite PSE / efectivo (quedan "pendiente" hasta que se aprueban)
         'metadata' => ['pedido_id' => $id, 'pais' => $pedido['pais']],
     ];
+    // Mercado Pago rechaza auto_return y notification_url si el sitio no es HTTPS público
+    // (p. ej. pruebas en http://127.0.0.1). En local el comprador vuelve con «Volver al sitio».
+    if (str_starts_with($sitio, 'https://')) {
+        $cuerpo['auto_return'] = 'approved';
+        $cuerpo['notification_url'] = "$sitio/api/webhook-mercadopago.php?pedido=$id";
+    }
 
     $r = http_json('POST', MP_API . '/checkout/preferences', $cuerpo, mp_cabeceras(['X-Idempotency-Key: ' . $id]));
     if ($r['status'] !== 201 || empty($r['json']['init_point'])) {
