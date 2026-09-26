@@ -198,8 +198,8 @@ function correo_entrega(array $p): bool
     $tituloEsc = htmlspecialchars($libro['titulo'], ENT_QUOTES, 'UTF-8');
     $adjuntos = correo_adjunto_libro();
     $intro = $adjuntos
-        ? "Te adjuntamos <strong>«$tituloEsc»</strong> en formato EPUB. También puedes descargarlo con este botón:"
-        : "Aquí tienes <strong>«$tituloEsc»</strong> en formato EPUB.";
+        ? "Te adjuntamos <strong>«{$tituloEsc}»</strong> en formato EPUB. También puedes descargarlo con este botón:"
+        : "Aquí tienes <strong>«{$tituloEsc}»</strong> en formato EPUB.";
 
     $html = <<<HTML
 <h1 style="margin:0 0 8px;font-size:22px;line-height:1.25;">¡Gracias por tu compra!</h1>
