@@ -14,7 +14,11 @@ $ip = ip_cliente();
 $iso = '';
 
 // 1) Proxies que ya traen el país
-foreach (['HTTP_CF_IPCOUNTRY', 'HTTP_X_COUNTRY_CODE', 'GEOIP_COUNTRY_CODE', 'HTTP_X_GEO_COUNTRY'] as $clave) {
+$cabeceras = ['GEOIP_COUNTRY_CODE'];
+if (tras_cloudflare()) {
+    array_unshift($cabeceras, 'HTTP_CF_IPCOUNTRY');
+}
+foreach ($cabeceras as $clave) {
     $v = strtoupper(trim((string) ($_SERVER[$clave] ?? '')));
     if (preg_match('/^[A-Z]{2}$/', $v)) {
         $iso = $v;

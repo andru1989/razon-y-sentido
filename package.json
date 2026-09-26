@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "local": "bash scripts/local.sh",
+    "tunel": "bash scripts/local.sh --tunel",
     "check": "astro check"
   },
   "engines": {

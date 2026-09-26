@@ -72,6 +72,11 @@ function catalogo(): array
 /** URL pública del sitio, sin barra final. */
 function url_sitio(): string
 {
+    // El túnel de pruebas (npm run tunel) fija su URL pública, que cambia en cada arranque.
+    $entorno = getenv('RYS_URL_SITIO');
+    if (is_string($entorno) && $entorno !== '') {
+        return rtrim($entorno, '/');
+    }
     $configurada = cfg('url_sitio');
     if (is_string($configurada) && $configurada !== '') {
         return rtrim($configurada, '/');
@@ -110,10 +115,19 @@ function solo_metodo(string $metodo): void
     }
 }
 
+/**
+ * ¿El sitio está detrás de Cloudflare (túnel de pruebas o proxy)? Solo entonces se aceptan
+ * sus cabeceras CF-*; sin proxy, cualquiera podría falsificarlas.
+ */
+function tras_cloudflare(): bool
+{
+    return getenv('RYS_TRAS_CLOUDFLARE') === '1' || cfg('tras_cloudflare') === true;
+}
+
 function ip_cliente(): string
 {
-    // Hostinger pasa la IP real en REMOTE_ADDR; los proxies de Cloudflare la pondrían en CF-Connecting-IP.
-    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+    // Hostinger pasa la IP real en REMOTE_ADDR; detrás de Cloudflare viene en CF-Connecting-IP.
+    $ip = (tras_cloudflare() ? ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? null) : null) ?? $_SERVER['REMOTE_ADDR'] ?? '';
     return substr((string) $ip, 0, 64);
 }
 

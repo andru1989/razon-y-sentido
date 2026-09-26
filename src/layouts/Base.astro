@@ -43,31 +43,34 @@ const portada = new URL('/img/portada.jpeg', SITIO.url).href;
   <meta property="og:site_name" content="Razón y Sentido" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Google tag (gtag.js) -->
-  <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${SITIO.ga4Id}`}></script>
-  <script is:inline define:vars={{ ga4Id: SITIO.ga4Id }}>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', ga4Id);
-  </script>
+  <!-- Analítica (GA4 + Meta Pixel): SOLO en el dominio de producción, para que las pruebas
+       locales o por túnel no ensucien los datos de las campañas. -->
+  <script is:inline define:vars={{ ga4Id: SITIO.ga4Id, pixelId: SITIO.metaPixelId, dominio: new URL(SITIO.url).hostname }}>
+    if (location.hostname === dominio) {
+      // Google tag (gtag.js)
+      var g = document.createElement('script');
+      g.async = true;
+      g.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id;
+      document.head.appendChild(g);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){dataLayer.push(arguments);};
+      gtag('js', new Date());
+      gtag('config', ga4Id);
 
-  <!-- Meta Pixel -->
-  <script is:inline define:vars={{ pixelId: SITIO.metaPixelId }}>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', pixelId);
-  fbq('track', 'PageView');
+      // Meta Pixel
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', pixelId);
+      fbq('track', 'PageView');
+    }
   </script>
-  <noscript><img height="1" width="1" style="display:none"
-    src={`https://www.facebook.com/tr?id=${SITIO.metaPixelId}&ev=PageView&noscript=1`}/></noscript>
-  <!-- End Meta Pixel -->
+  <!-- End analítica -->
 
   <slot name="head" />
 
