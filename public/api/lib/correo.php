@@ -83,6 +83,59 @@ function correo_guardar_archivo(string $para, string $asunto, array $cabeceras, 
 }
 
 /** Cliente SMTP mínimo (SSL implícito en 465 o STARTTLS en 587) con AUTH LOGIN. */
+/**
+ * Comprueba conexión y autenticación SMTP sin enviar nada (chequeo de lanzamiento).
+ * Devuelve '' si todo va bien o el motivo del fallo.
+ */
+function smtp_probar(): string
+{
+    $host = (string) cfg('correo.smtp.host', '');
+    $puerto = (int) cfg('correo.smtp.puerto', 465);
+    $ssl = $puerto === 465;
+    $sock = @stream_socket_client(($ssl ? 'ssl://' : 'tcp://') . "$host:$puerto", $errno, $errstr, 10);
+    if (!$sock) {
+        return "no conecta con $host:$puerto ($errstr)";
+    }
+    stream_set_timeout($sock, 10);
+    $leer = function () use ($sock): string {
+        $r = '';
+        while (($l = fgets($sock, 515)) !== false) {
+            $r .= $l;
+            if (strlen($l) < 4 || $l[3] !== '-') {
+                break;
+            }
+        }
+        return $r;
+    };
+    $paso = function (string $cmd, string $esperado) use ($sock, $leer): void {
+        fwrite($sock, $cmd . "\r\n");
+        $r = $leer();
+        if (!str_starts_with($r, $esperado)) {
+            throw new RuntimeException(trim($r) ?: 'sin respuesta');
+        }
+    };
+    try {
+        if (!str_starts_with($leer(), '220')) {
+            throw new RuntimeException('sin saludo 220');
+        }
+        $paso('EHLO tiempo.razonysentido.com', '250');
+        if (!$ssl) {
+            $paso('STARTTLS', '220');
+            stream_socket_enable_crypto($sock, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+            $paso('EHLO tiempo.razonysentido.com', '250');
+        }
+        $paso('AUTH LOGIN', '334');
+        $paso(base64_encode((string) cfg('correo.smtp.usuario', '')), '334');
+        $paso(base64_encode((string) cfg('correo.smtp.clave', '')), '235');
+        fwrite($sock, "QUIT\r\n");
+        fclose($sock);
+        return '';
+    } catch (Throwable $e) {
+        fclose($sock);
+        return 'autenticación rechazada: ' . mb_substr($e->getMessage(), 0, 120);
+    }
+}
+
 function smtp_enviar(string $de, string $para, string $asunto, array $cabeceras, string $cuerpo): bool
 {
     $host = (string) cfg('correo.smtp.host', 'smtp.hostinger.com');

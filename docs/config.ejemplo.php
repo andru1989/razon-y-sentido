@@ -42,8 +42,10 @@ return [
         'transporte' => 'mail',
         // El EPUB va adjunto si pesa hasta estos MB (Gmail admite ~25 MB; base64 añade un 33 %). 0 = solo enlace.
         'adjunto_max_mb' => 10,
+        // razonysentido.com tiene el correo en HostGator: se envía por SU servidor para que el SPF
+        // del dominio lo autorice (enviar desde Hostinger con ese remitente acabaría en spam).
         'smtp' => [
-            'host' => 'smtp.hostinger.com',
+            'host' => 'mail.razonysentido.com',
             'puerto' => 465,
             'usuario' => 'libro@razonysentido.com',
             'clave' => '',

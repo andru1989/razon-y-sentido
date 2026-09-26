@@ -88,7 +88,23 @@ RYS_PRIVATE_DIR="$PWD/private" php -S localhost:8080 -t dist
 - Los webhooks no llegan a localhost, pero `/gracias` concilia por sí sola consultando a la pasarela.
 - `private/logs/*.log` registra cada paso.
 
-## 5. Lista de comprobación antes de cobrar de verdad
+## 5. Lanzamiento a producción
+
+El despliegue es automático: **push a `main` → GitHub Actions compila Astro → sube `dist/` a `public_html` por FTPS** (secretos `HOSTINGER_FTP_*` del repositorio). No se usa la integración Git de Hostinger: copiaría el repo sin compilar.
+
+El servidor ya tiene `~/domains/tiempo.razonysentido.com/private/config.php` en modo producción. Antes de fusionar a `main`:
+
+1. **Mercado Pago (cuenta que recibe el dinero):** *Tus integraciones* → la aplicación → **Credenciales de producción** (hay que activarlas indicando sector y la web `https://tiempo.razonysentido.com`). El Access Token va en `mercadopago.access_token`.
+2. **Webhook de producción:** *Webhooks* → modo productivo → URL `https://tiempo.razonysentido.com/api/webhook-mercadopago.php`, evento **Pagos** → la clave secreta va en `mercadopago.webhook_secret`.
+3. **EPUB definitivo** → `private/libro.epub`.
+4. **Correo:** el dominio tiene el correo en HostGator. Crear (o usar) un buzón, p. ej. `libro@razonysentido.com`, y poner usuario y contraseña en `correo.smtp` (host `mail.razonysentido.com`, puerto 465). `correo.copia_a` = correo que recibe el aviso de cada venta.
+5. Panel → **Ejecutar chequeo de lanzamiento**: todo en ✅.
+6. Fusionar `astro-pagos` en `main` y hacer push. En 1–2 minutos el sitio está publicado (pestaña *Actions* de GitHub).
+7. Hacer **una compra real** de Colombia con importe normal y reembolsarla desde Mercado Pago si se desea.
+
+Volver atrás: `git revert` del merge y push, o desplegar la etiqueta `pre-astro`.
+
+## 6. Lista de comprobación antes de cobrar de verdad
 
 - [ ] `private/libro.epub` es el archivo definitivo (abrirlo en un lector para confirmarlo).
 - [ ] Compra de prueba en sandbox por **Colombia** (Mercado Pago) y por **otro país** (PayPal): llega el correo, descarga funciona, Purchase aparece en Meta y GA4.
@@ -97,7 +113,7 @@ RYS_PRIVATE_DIR="$PWD/private" php -S localhost:8080 -t dist
 - [ ] Una compra real de cada pasarela con importe normal; después reembolsar desde el panel de la pasarela si se desea.
 - [ ] Copia de seguridad periódica de `private/pedidos.sqlite` (basta copiar el archivo).
 
-## 6. Operación diaria
+## 7. Operación diaria
 
 - **¿Vendí algo?** Correo de aviso (`copia_a`) o panel de pedidos.
 - **Comprador dice que no le llegó:** panel → *Reenviar correo*. O enviarle `https://tiempo.razonysentido.com/gracias?pedido=<id>`, que muestra el botón de descarga.

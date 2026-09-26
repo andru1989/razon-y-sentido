@@ -84,6 +84,21 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <h1>Pedidos del EPUB <span style="font-size:12px;color:#C7822A;">· modo <?= $modo ?></span></h1>
 <p class="sub">Últimos 200 pedidos. «Comprobar» vuelve a preguntar a la pasarela; «Reenviar» manda otra vez el correo de descarga; «Renovar» reinicia el enlace.</p>
 <?php if ($mensaje): ?><div class="msg"><?= $e($mensaje) ?></div><?php endif; ?>
+<?php if (isset($_GET['chequeo'])):
+    require_once __DIR__ . '/lib/chequeo.php';
+    $puntos = chequeo_lanzamiento();
+    $errores = count(array_filter($puntos, fn($p) => $p[0] === 'error'));
+    $iconos = ['ok' => '✅', 'aviso' => '⚠️', 'error' => '❌']; ?>
+<div class="msg" style="border-color:<?= $errores ? 'rgba(217,83,79,.45)' : 'rgba(46,124,153,.45)' ?>;">
+<strong><?= $errores ? "Chequeo de lanzamiento: $errores problema(s) por resolver" : 'Chequeo de lanzamiento: listo para vender' ?></strong>
+<ul style="list-style:none;margin:10px 0 0;padding:0;">
+<?php foreach ($puntos as [$tipo, $titulo, $detalle]): ?>
+<li style="margin:6px 0;"><?= $iconos[$tipo] ?> <strong><?= $e($titulo) ?></strong> <span style="color:rgba(14,11,22,.6);">— <?= $e($detalle) ?></span></li>
+<?php endforeach; ?>
+</ul></div>
+<?php else: ?>
+<p style="margin:0 0 14px;"><a href="?clave=<?= $claveEsc ?>&amp;chequeo=1" style="color:#2E7C99;font-weight:700;font-size:13px;">▶ Ejecutar chequeo de lanzamiento</a></p>
+<?php endif; ?>
 <div class="tot"><?php foreach ($totales as $t): ?><div><strong><?= $e($t['estado']) ?></strong>: <?= (int) $t['n'] ?><?php if ($t['estado'] === 'pagado'): ?> · <?= number_format((float) $t['suma'], $t['moneda'] === 'COP' ? 0 : 2, ',', '.') ?> <?= $e($t['moneda']) ?><?php endif; ?></div><?php endforeach; ?></div>
 <div class="wrap"><table>
 <tr><th>Fecha (UTC)</th><th>Pedido</th><th>Estado</th><th>País</th><th>Importe</th><th>Comprador</th><th>Pasarela / ref.</th><th>Descargas</th><th>Acciones</th></tr>
