@@ -37,15 +37,6 @@ async function paisPorIp(): Promise<string> {
   }
 }
 
-// Elección explícita del visitante, recordada entre visitas.
-const CLAVE_PAIS = 'rys_pais';
-function leerPaisGuardado(): string {
-  try { return localStorage.getItem(CLAVE_PAIS) || ''; } catch { return ''; }
-}
-function guardarPais(codigo: string) {
-  try { codigo ? localStorage.setItem(CLAVE_PAIS, codigo) : localStorage.removeItem(CLAVE_PAIS); } catch { /* sin almacenamiento */ }
-}
-
 // País por zona horaria del dispositivo: fiable incluso sin red y en local.
 const ZONAS: Record<string, string> = {
   'America/Bogota': 'co',
@@ -98,17 +89,11 @@ export function registrarComponentes(Alpine: AlpineType) {
         this.aviso = 'Tu pago no se completó y no se hizo ningún cargo. Puedes intentarlo de nuevo cuando quieras.';
       }
 
-      // Prioridad: 1) ?pais= de la URL (campañas) · 2) elección previa guardada ·
-      // 3) IP (/api/pais.php) · 4) zona horaria · 5) idioma · 6) país por defecto.
-      // El selector solo aparece si el visitante pulsa "Cambiar país".
+      // Prioridad: 1) ?pais= de la URL (campañas) · 2) IP (/api/pais.php) ·
+      // 3) zona horaria · 4) idioma · 5) país por defecto. No hay selector manual.
       const deUrl = (q.get('pais') || '').toLowerCase();
       if (this.paises[deUrl]) {
         this.fijarPais(deUrl, 'url');
-        return;
-      }
-      const guardado = leerPaisGuardado();
-      if (guardado && this.paises[guardado]) {
-        this.fijarPais(guardado, 'guardado');
         return;
       }
       void this.detectarPais();
@@ -149,19 +134,6 @@ export function registrarComponentes(Alpine: AlpineType) {
       const texto = this.directo ? this.directo.precio_texto : '';
       const m = texto.match(/^(.*\S)\s+([A-Z]{3})$/);
       return m ? [m[1], m[2]] : [texto, ''];
-    },
-
-    elegir(codigo: string) {
-      this.pais = codigo;
-      this.error = '';
-      guardarPais(codigo);
-    },
-    cambiarPais() {
-      this.pais = '';
-      this.detectando = false;
-      this.error = '';
-      this.aviso = '';
-      guardarPais('');
     },
 
     async comprar() {

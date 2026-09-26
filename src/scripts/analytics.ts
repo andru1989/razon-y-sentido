@@ -179,7 +179,7 @@ export function iniciarAnalitica() {
 
   /* ───────── MANEJADOR DELEGADO DE CLICS ─────────
      Un solo listener cubre: tarjetas de plataforma (creadas
-     dinámicamente por país), botones de país y enlaces externos. */
+     dinámicamente por país). */
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement | null;
     if (!target) return;
@@ -209,13 +209,6 @@ export function iniciarAnalitica() {
       }, 350);
       return;
     }
-
-    // 2) Clic en un botón de país (selector "Elige tu país")
-    const paisBtn = target.closest<HTMLElement>('.pais-btn');
-    if (paisBtn) {
-      emitir('SeleccionPais', 'trackCustom', 'seleccion_pais', { pais: paisBtn.dataset.pais || 'desconocido', origen: 'click' });
-      return;
-    }
   });
 
   /* ───────── VISIBILIDAD DE SECCIONES CLAVE ─────────
@@ -225,7 +218,6 @@ export function iniciarAnalitica() {
       { id: 'libro', meta: 'LibroVisible', ga: 'libro_visible' },
       { id: 'resenas', meta: 'Reseñas', ga: 'resenas' },
       { id: 'faq', meta: 'Preguntas frecuentes', ga: 'preguntas_frecuentes' },
-      { id: 'selector-pais', meta: 'SelectorPaisVisible', ga: 'selector_pais_visible' },
     ];
     secciones.forEach((s) => {
       const el = document.getElementById(s.id);

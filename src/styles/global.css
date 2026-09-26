@@ -125,17 +125,7 @@ details summary::-webkit-details-marker { display: none; }
 details[open] summary .icon-chevron { transform: rotate(180deg); }
 .icon-chevron { transition: transform .25s ease; }
 
-/* ── Sección país + tiendas ── */
-.pais-btn {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.35rem; padding: 1.1rem 0.75rem; border-radius: 1rem;
-  background: #fff; border: 1.5px solid #EBEAEA; cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-  font-weight: 600; color: var(--navy);
-}
-.pais-btn:hover { transform: translateY(-3px); border-color: rgba(232,163,61,0.45); box-shadow: 0 10px 26px rgba(232,163,61,0.14); }
-.pais-btn .bandera { font-size: 1.9rem; line-height: 1; }
-
+/* ── Tiendas por país ── */
 .platform-card {
   background: #fff; border: 1px solid #EBEAEA; border-radius: 1rem; padding: 1.1rem 1.25rem;
   display: flex; align-items: center; gap: 0.9rem;

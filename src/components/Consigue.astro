@@ -1,7 +1,7 @@
 ---
 // SECCIÓN 5 · CONSIGUE EL LIBRO (por país)
-// Lee ?pais=co|mx|es|ar de la URL. Si no viene, intenta deducirlo del idioma
-// del navegador (es-CO, es-MX…) y, si tampoco, muestra el selector.
+// País: ?pais=co|mx|es|ar de la URL o detección automática (IP → zona horaria →
+// idioma → país por defecto). No hay selector manual.
 // Por país: tarjeta destacada de compra directa del EPUB (Mercado Pago en
 // Colombia, PayPal en el resto) + librerías externas para el libro físico.
 import { PAISES, LIBRO, PAIS_POR_DEFECTO } from '../data/libro';
@@ -15,7 +15,7 @@ const catalogoJson = JSON.stringify(PAISES).replace(/</g, '\\u003c');
     <div class="divider-gold"></div>
     <h2 class="font-display text-3xl sm:text-4xl mb-3" style="color:var(--navy);">Consigue el <span class="text-gold">libro</span></h2>
     <p class="text-base mb-8 max-w-md mx-auto" style="color:rgba(14,11,22,0.6);">
-      Elige tu país. Compra el libro digital con descarga inmediata o consíguelo en tu librería preferida.
+      Compra el libro digital con descarga inmediata o consíguelo en tu librería preferida.
     </p>
 
     <!-- Aviso (p. ej. pago cancelado al volver de la pasarela) -->
@@ -30,25 +30,11 @@ const catalogoJson = JSON.stringify(PAISES).replace(/</g, '\\u003c');
       <p class="text-xs font-semibold uppercase tracking-widest" style="color:rgba(14,11,22,0.45);">Detectando tu país…</p>
     </div>
 
-    <!-- Selector de país: solo si el visitante pulsa "Cambiar país" -->
-    <div id="selector-pais" x-show="!pais && !detectando" x-cloak>
-      <p class="text-sm font-bold uppercase tracking-widest mb-5" style="color:var(--gold-dark);">Elige tu país</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <template x-for="(datos, codigo) in paises" :key="codigo">
-          <button type="button" class="pais-btn" :data-pais="codigo" @click="elegir(codigo)">
-            <span class="bandera" x-text="datos.bandera"></span>
-            <span class="text-sm" x-text="datos.nombre"></span>
-          </button>
-        </template>
-      </div>
-    </div>
-
-    <!-- País elegido -->
+    <!-- País detectado (sin selector: lo decide la detección automática o ?pais= de la URL) -->
     <div x-show="pais" x-cloak>
       <div class="flex items-center justify-center gap-2 mb-8">
         <span class="text-2xl" x-text="paisActual.bandera"></span>
         <span class="font-display text-xl" style="color:var(--navy);" x-text="paisActual.nombre"></span>
-        <button type="button" @click="cambiarPais()" class="text-xs font-semibold ml-2" style="color:var(--teal);">Cambiar país</button>
       </div>
 
       <!-- Compra directa del EPUB -->
