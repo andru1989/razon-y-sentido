@@ -33,10 +33,10 @@ import { SITIO, LIBRO } from '../data/libro';
             <div class="w-16 h-16 rounded-full gradient-cta flex items-center justify-center mx-auto mb-4">
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
+            <p class="text-[11px] font-bold uppercase tracking-widest mb-1" style="color:var(--gold-dark);">Pago exitoso</p>
             <h1 class="font-display text-2xl sm:text-3xl mb-2" style="color:var(--navy);">¡Gracias! Tu libro está listo.</h1>
             <p class="text-sm mb-6" style="color:rgba(14,11,22,0.6);">
-              <span x-text="'«' + titulo + '»'"></span> en formato EPUB.
-              También enviamos el enlace a <strong x-text="pedido.email"></strong>.
+              <span x-text="'«' + titulo + '»'"></span> en formato EPUB. Descárgalo ahora:
             </p>
             <a :href="pedido.descarga_url" class="compra-btn gradient-cta cta-pulse" download data-descarga>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12M6 11l6 6 6-6M4 21h16"/></svg>
@@ -45,6 +45,21 @@ import { SITIO, LIBRO } from '../data/libro';
             <p class="text-[11px] mt-3" style="color:rgba(14,11,22,0.45);">
               Enlace válido <span x-text="pedido.dias_validez"></span> días · hasta <span x-text="pedido.descargas_max"></span> descargas · Pedido <span class="font-mono" x-text="pedido.id_corto"></span>
             </p>
+          </div>
+
+          <!-- Estado del correo + reenvío -->
+          <div class="mt-6 rounded-xl p-4 flex items-start gap-3" style="background:rgba(46,124,153,0.06); border:1px solid rgba(46,124,153,0.22);">
+            <svg class="flex-shrink-0 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+            <div class="flex-1 min-w-0 text-sm" style="color:rgba(14,11,22,0.75);">
+              <p x-show="pedido.correo_enviado">También te enviamos el libro a <strong class="break-all" x-text="pedido.email"></strong>. Si no lo ves en unos minutos, revisa spam o promociones.</p>
+              <p x-show="!pedido.correo_enviado">Estamos enviando el libro a <strong class="break-all" x-text="pedido.email"></strong>.</p>
+              <button type="button" class="mt-2 text-xs font-bold" style="color:var(--teal);"
+                @click="reenviar()" :disabled="reenvio === 'enviando'" x-show="reenvio !== 'ok'">
+                <span x-text="reenvio === 'enviando' ? 'Enviando…' : '¿No te llegó? Reenviar a mi correo'"></span>
+              </button>
+              <p x-show="reenvio === 'ok'" x-cloak class="mt-2 text-xs font-bold" style="color:var(--teal);">✓ Reenviado. Revisa tu bandeja en unos minutos.</p>
+              <p x-show="reenvioError" x-cloak class="mt-2 text-xs font-medium" style="color:#C0392B;" x-text="reenvioError"></p>
+            </div>
           </div>
 
           <div class="mt-8 pt-6 border-t border-amber-100">
@@ -69,7 +84,7 @@ import { SITIO, LIBRO } from '../data/libro';
           <h1 class="font-display text-2xl mb-2" style="color:var(--navy);">Tu pago está en proceso</h1>
           <p class="text-sm mb-5" style="color:rgba(14,11,22,0.65);">
             Algunos medios de pago (PSE, efectivo, revisión de seguridad) tardan unos minutos u horas en confirmarse.
-            En cuanto la pasarela lo apruebe, te enviaremos el enlace de descarga a <strong x-text="pedido && pedido.email"></strong>.
+            En cuanto la pasarela lo apruebe, te enviaremos el libro a <strong x-text="pedido && pedido.email"></strong>.
           </p>
           <p class="text-xs mb-6" style="color:rgba(14,11,22,0.5);">Puedes guardar esta página y volver más tarde: se actualiza sola.</p>
           <button type="button" @click="reintentar()" class="text-sm font-semibold" style="color:var(--teal);">Volver a comprobar ahora</button>

@@ -243,7 +243,7 @@ export function registrarComponentes(Alpine: AlpineType) {
   interface Pedido {
     id: string; id_corto: string; estado: 'pendiente' | 'pagado' | 'fallido' | 'reembolsado';
     pais: string; proveedor: string; moneda: string; monto: number; email: string;
-    descarga_url?: string; dias_validez?: number; descargas_max?: number;
+    descarga_url?: string; dias_validez?: number; descargas_max?: number; correo_enviado?: boolean;
   }
 
   Alpine.data('gracias', () => ({
@@ -295,6 +295,29 @@ export function registrarComponentes(Alpine: AlpineType) {
         } else {
           this.estado = 'error';
         }
+      }
+    },
+
+    reenvio: '' as '' | 'enviando' | 'ok',
+    reenvioError: '',
+
+    async reenviar() {
+      if (!this.pedido || this.reenvio === 'enviando') return;
+      this.reenvio = 'enviando';
+      this.reenvioError = '';
+      try {
+        const res = await fetch('/api/reenviar.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ id: this.pedido.id }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (!res.ok || !data.ok) throw new Error(data.error || 'No pudimos reenviar el correo.');
+        this.reenvio = 'ok';
+        this.pedido.correo_enviado = true;
+      } catch (e) {
+        this.reenvio = '';
+        this.reenvioError = e instanceof Error ? e.message : 'No pudimos reenviar el correo.';
       }
     },
 

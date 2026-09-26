@@ -34,8 +34,11 @@ return [
         'responder_a' => 'libro@razonysentido.com',
         // Aviso de cada venta al vendedor (vacío = no enviar).
         'copia_a' => '',
-        // 'mail' (sendmail de Hostinger, sin configurar nada) o 'smtp' (buzón del dominio; mejor entregabilidad).
+        // 'mail' (sendmail de Hostinger, sin configurar nada), 'smtp' (buzón del dominio; mejor entregabilidad)
+        // o 'archivo' (pruebas locales: no envía, guarda el correo en private/correos/ y se ve en el panel).
         'transporte' => 'mail',
+        // El EPUB va adjunto si pesa hasta estos MB (Gmail admite ~25 MB; base64 añade un 33 %). 0 = solo enlace.
+        'adjunto_max_mb' => 10,
         'smtp' => [
             'host' => 'smtp.hostinger.com',
             'puerto' => 465,

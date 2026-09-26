@@ -17,6 +17,25 @@ if ($claveCfg === '' || strlen($claveCfg) < 12 || !hash_equals($claveCfg, $clave
 header('X-Robots-Tag: noindex, nofollow');
 header('Cache-Control: no-store');
 
+// Vista de un correo guardado por el transporte 'archivo' (pruebas locales).
+$dirCorreos = RYS_PRIVATE_DIR . '/correos';
+if (isset($_GET['correo'])) {
+    $archivo = basename((string) $_GET['correo']);
+    $ruta = "$dirCorreos/$archivo";
+    if (!preg_match('/^[0-9]{8}-[0-9]{6}-[0-9a-f]{6}\.(html|eml)$/', $archivo) || !is_file($ruta)) {
+        http_response_code(404);
+        exit('No encontrado');
+    }
+    if (str_ends_with($archivo, '.eml')) {
+        header('Content-Type: message/rfc822');
+        header('Content-Disposition: attachment; filename="' . $archivo . '"');
+    } else {
+        header('Content-Type: text/html; charset=utf-8');
+    }
+    readfile($ruta);
+    exit;
+}
+
 $mensaje = '';
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $id = (string) ($_POST['id'] ?? '');
@@ -32,6 +51,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             pedido_actualizar($id, ['correo_enviado_en' => ahora()]);
         }
         $mensaje = $ok ? 'Correo reenviado a ' . $p['email'] . '.' : 'No se pudo enviar el correo; revisa private/logs/correo.log.';
+    } elseif ($p && $accion === 'simular' && !en_produccion() && $p['estado'] !== 'pagado') {
+        // Solo sandbox: marca pagado sin pasar por la pasarela para probar /gracias y el correo.
+        pedido_marcar_pagado($id, ['pago_ref' => 'SIMULADO-' . strtoupper(substr(uuid4(), 0, 8)), 'estado_detalle' => 'simulado_sandbox']);
+        $mensaje = 'Pago simulado. Abre la página de gracias del pedido para ver la descarga.';
     } elseif ($p && $accion === 'renovar' && $p['estado'] === 'pagado') {
         $dias = (int) (catalogo()['descarga']['dias_validez'] ?? 30);
         pedido_actualizar($id, ['descargas' => 0, 'expira_en' => gmdate('Y-m-d\TH:i:s\Z', time() + $dias * 86400)]);
@@ -67,7 +90,7 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <?php foreach ($filas as $f): ?>
 <tr>
 <td><?= $e(str_replace('T', ' ', substr((string) $f['creado_en'], 0, 16))) ?></td>
-<td class="mono" title="<?= $e($f['id']) ?>"><?= $e(strtoupper(substr($f['id'], 0, 8))) ?></td>
+<td class="mono" title="<?= $e($f['id']) ?>"><a href="<?= $e(url_sitio() . '/gracias?pedido=' . $f['id']) ?>" target="_blank" rel="noopener" style="color:#2E7C99;"><?= $e(strtoupper(substr($f['id'], 0, 8))) ?></a></td>
 <td><span class="est <?= $e($f['estado']) ?>"><?= $e($f['estado']) ?></span><?php if ($f['estado_detalle']): ?><br><span class="mono"><?= $e($f['estado_detalle']) ?></span><?php endif; ?></td>
 <td><?= $e(strtoupper($f['pais'])) ?></td>
 <td><?= number_format((float) $f['monto'], $f['moneda'] === 'COP' ? 0 : 2, ',', '.') ?> <?= $e($f['moneda']) ?></td>
@@ -76,6 +99,7 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <td><?= (int) $f['descargas'] ?><?php if ($f['expira_en']): ?><br><span class="mono">hasta <?= $e(substr((string) $f['expira_en'], 0, 10)) ?></span><?php endif; ?></td>
 <td>
 <?php if ($f['estado'] !== 'pagado'): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="comprobar"><button>Comprobar</button></form><?php endif; ?>
+<?php if ($f['estado'] !== 'pagado' && !en_produccion()): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="simular"><button style="background:#C7822A;">Simular pago aprobado</button></form><?php endif; ?>
 <?php if ($f['estado'] === 'pagado'): ?>
 <form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="reenviar"><button class="sec">Reenviar correo</button></form>
 <form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="renovar"><button class="sec">Renovar enlace</button></form>
@@ -85,4 +109,19 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <?php endforeach; ?>
 <?php if (!$filas): ?><tr><td colspan="9" style="text-align:center;color:rgba(14,11,22,.5);padding:24px;">Todavía no hay pedidos.</td></tr><?php endif; ?>
 </table></div>
+<?php
+$correos = is_dir($dirCorreos) ? array_slice(array_reverse(glob("$dirCorreos/*.html") ?: []), 0, 20) : [];
+if ($correos): ?>
+<h2 style="font-size:16px;margin:26px 0 8px;">Correos guardados <span style="font-size:12px;color:rgba(14,11,22,.5);font-weight:400;">· transporte «archivo», no se enviaron</span></h2>
+<div class="wrap"><table>
+<tr><th>Guardado (UTC)</th><th>Vista</th><th>Mensaje completo</th></tr>
+<?php foreach ($correos as $c): $b = basename($c, '.html'); ?>
+<tr>
+<td class="mono"><?= $e(substr($b, 0, 4) . '-' . substr($b, 4, 2) . '-' . substr($b, 6, 2) . ' ' . substr($b, 9, 2) . ':' . substr($b, 11, 2)) ?></td>
+<td><a href="?clave=<?= $claveEsc ?>&amp;correo=<?= $e($b) ?>.html" target="_blank" rel="noopener" style="color:#2E7C99;font-weight:600;">Ver correo</a></td>
+<td><a href="?clave=<?= $claveEsc ?>&amp;correo=<?= $e($b) ?>.eml" style="color:#2E7C99;">Descargar .eml (con el EPUB adjunto)</a></td>
+</tr>
+<?php endforeach; ?>
+</table></div>
+<?php endif; ?>
 </body></html>

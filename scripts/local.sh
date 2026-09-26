@@ -28,7 +28,9 @@ fi
 # Directorio privado local (config de sandbox + EPUB de prueba)
 if [ ! -f private/config.php ]; then
   mkdir -p private/logs
-  sed "s#'url_sitio' => 'https://tiempo.razonysentido.com'#'url_sitio' => 'http://127.0.0.1:$PUERTO'#" docs/config.ejemplo.php > private/config.php
+  sed -e "s#'url_sitio' => 'https://tiempo.razonysentido.com'#'url_sitio' => 'http://127.0.0.1:$PUERTO'#" \
+      -e "s#'transporte' => 'mail'#'transporte' => 'archivo'#" \
+      -e "s#'clave' => '',#'clave' => 'clave-local-de-pruebas-123',#" docs/config.ejemplo.php > private/config.php
   echo "Creado private/config.php: pon ahí tus credenciales de prueba."
 fi
 if [ ! -f private/libro.epub ]; then

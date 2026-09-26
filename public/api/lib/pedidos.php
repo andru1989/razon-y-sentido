@@ -185,6 +185,7 @@ function pedido_publico(array $p): array
         'email' => $p['email'],
     ];
     if ($p['estado'] === 'pagado' && $p['token_descarga']) {
+        $salida['correo_enviado'] = (bool) $p['correo_enviado_en'];
         $salida['descarga_url'] = url_descarga($p);
         $salida['dias_validez'] = (int) ($cat['descarga']['dias_validez'] ?? 30);
         $salida['descargas_max'] = (int) ($cat['descarga']['descargas_max'] ?? 5);

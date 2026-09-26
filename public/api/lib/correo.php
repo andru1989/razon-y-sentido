@@ -1,35 +1,84 @@
 <?php
 /**
- * Correo de entrega. Dos transportes, elegidos en config.php (correo.transporte):
- *   'mail' → mail() de PHP (Hostinger lo enruta por su sendmail; funciona sin configurar nada)
- *   'smtp' → SMTP autenticado (p. ej. smtp.hostinger.com:465 con un buzón del dominio; mejor entregabilidad)
+ * Correo de entrega. Tres transportes, elegidos en config.php (correo.transporte):
+ *   'mail'    → mail() de PHP (Hostinger lo enruta por su sendmail; funciona sin configurar nada)
+ *   'smtp'    → SMTP autenticado con un buzón del dominio (mejor entregabilidad)
+ *   'archivo' → no envía: guarda el correo en private/correos/ para revisarlo (pruebas locales)
  */
 declare(strict_types=1);
 
-function correo_enviar(string $para, string $asunto, string $html, string $texto, ?string $responderA = null): bool
+/**
+ * @param array<int, array{nombre: string, ruta: string, tipo: string}> $adjuntos
+ */
+function correo_enviar(string $para, string $asunto, string $html, string $texto, ?string $responderA = null, array $adjuntos = []): bool
 {
     $remitente = (string) cfg('correo.remitente', 'no-reply@tiempo.razonysentido.com');
     $nombre = (string) cfg('correo.nombre', 'Razón y Sentido');
     $responderA = $responderA ?: (string) cfg('correo.responder_a', $remitente);
 
-    $limite = 'rys-' . bin2hex(random_bytes(8));
+    // multipart/mixed ( multipart/alternative (texto + html) + adjuntos )
+    $alt = 'rys-alt-' . bin2hex(random_bytes(8));
+    $alternativa = "--$alt\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($texto))
+        . "--$alt\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($html))
+        . "--$alt--\r\n";
+
     $cabeceras = [
         'From: ' . mb_encode_mimeheader($nombre, 'UTF-8') . " <$remitente>",
         "Reply-To: $responderA",
         'MIME-Version: 1.0',
-        "Content-Type: multipart/alternative; boundary=\"$limite\"",
         'X-Mailer: RazonYSentido-Landing',
     ];
-    $cuerpo = "--$limite\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n$texto\r\n"
-        . "--$limite\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n$html\r\n--$limite--\r\n";
+    if ($adjuntos) {
+        $mix = 'rys-mix-' . bin2hex(random_bytes(8));
+        $cabeceras[] = "Content-Type: multipart/mixed; boundary=\"$mix\"";
+        $cuerpo = "--$mix\r\nContent-Type: multipart/alternative; boundary=\"$alt\"\r\n\r\n$alternativa";
+        foreach ($adjuntos as $a) {
+            $datos = @file_get_contents($a['ruta']);
+            if ($datos === false) {
+                registrar('correo', 'no se pudo leer el adjunto ' . basename($a['ruta']));
+                continue;
+            }
+            $nombreAscii = preg_replace('/[^A-Za-z0-9._-]/', '_', $a['nombre']) ?: 'adjunto';
+            $cuerpo .= "--$mix\r\nContent-Type: {$a['tipo']}; name=\"$nombreAscii\"\r\nContent-Transfer-Encoding: base64\r\n"
+                . "Content-Disposition: attachment; filename=\"$nombreAscii\"\r\n\r\n" . chunk_split(base64_encode($datos));
+        }
+        $cuerpo .= "--$mix--\r\n";
+    } else {
+        $cabeceras[] = "Content-Type: multipart/alternative; boundary=\"$alt\"";
+        $cuerpo = $alternativa;
+    }
 
-    if (cfg('correo.transporte', 'mail') === 'smtp') {
+    $transporte = cfg('correo.transporte', 'mail');
+    if ($transporte === 'archivo') {
+        return correo_guardar_archivo($para, $asunto, $cabeceras, $cuerpo, $html, $adjuntos);
+    }
+    if ($transporte === 'smtp') {
         return smtp_enviar($remitente, $para, $asunto, $cabeceras, $cuerpo);
     }
     $ok = @mail($para, mb_encode_mimeheader($asunto, 'UTF-8'), $cuerpo, implode("\r\n", $cabeceras));
     if (!$ok) {
         registrar('correo', "mail() devolvió false para $para");
     }
+    return $ok;
+}
+
+/** Transporte de pruebas: guarda el .eml completo (se abre con Mail/Outlook) y una vista .html. */
+function correo_guardar_archivo(string $para, string $asunto, array $cabeceras, string $cuerpo, string $html, array $adjuntos): bool
+{
+    $dir = RYS_PRIVATE_DIR . '/correos';
+    if (!is_dir($dir) && !@mkdir($dir, 0700, true)) {
+        return false;
+    }
+    $base = gmdate('Ymd-His') . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
+    $eml = 'To: ' . $para . "\r\nSubject: " . mb_encode_mimeheader($asunto, 'UTF-8') . "\r\nDate: " . date('r') . "\r\n"
+        . implode("\r\n", $cabeceras) . "\r\n\r\n" . $cuerpo;
+    $lista = implode(', ', array_map(fn($a) => $a['nombre'] . ' (' . round(((int) @filesize($a['ruta'])) / 1024) . ' KB)', $adjuntos));
+    $meta = '<div style="font:13px/1.5 monospace;background:#0E0B16;color:#F5C983;padding:12px 16px;">'
+        . 'Para: ' . htmlspecialchars($para) . '<br>Asunto: ' . htmlspecialchars($asunto)
+        . '<br>Adjuntos: ' . htmlspecialchars($lista ?: 'ninguno') . '</div>';
+    $ok = @file_put_contents("$dir/$base.eml", $eml) !== false
+        && @file_put_contents("$dir/$base.html", $meta . $html) !== false;
+    registrar('correo', "guardado en archivo $base para $para", ['asunto' => $asunto, 'adjuntos' => count($adjuntos)]);
     return $ok;
 }
 
@@ -120,7 +169,23 @@ function correo_plantilla(string $titulo, string $contenidoHtml): string
 HTML;
 }
 
-/** Correo al comprador con el enlace de descarga e instrucciones de lectura. */
+/** Adjunto del EPUB si existe y no supera correo.adjunto_max_mb (por defecto 10 MB). */
+function correo_adjunto_libro(): array
+{
+    $cat = catalogo();
+    $ruta = RYS_PRIVATE_DIR . '/' . basename((string) ($cat['libro']['archivo'] ?? 'libro.epub'));
+    $maxBytes = (int) round(((float) cfg('correo.adjunto_max_mb', 10)) * 1024 * 1024);
+    if (!is_file($ruta) || $maxBytes <= 0 || filesize($ruta) > $maxBytes) {
+        return [];
+    }
+    return [[
+        'nombre' => (string) ($cat['libro']['nombre_descarga'] ?? 'libro.epub'),
+        'ruta' => $ruta,
+        'tipo' => 'application/epub+zip',
+    ]];
+}
+
+/** Correo al comprador: EPUB adjunto + enlace de descarga de respaldo + instrucciones de lectura. */
 function correo_entrega(array $p): bool
 {
     $cat = catalogo();
@@ -131,10 +196,14 @@ function correo_entrega(array $p): bool
     $pedidoCorto = strtoupper(substr($p['id'], 0, 8));
     $wa = 'https://wa.me/573235109187';
     $tituloEsc = htmlspecialchars($libro['titulo'], ENT_QUOTES, 'UTF-8');
+    $adjuntos = correo_adjunto_libro();
+    $intro = $adjuntos
+        ? "Te adjuntamos <strong>«$tituloEsc»</strong> en formato EPUB. También puedes descargarlo con este botón:"
+        : "Aquí tienes <strong>«$tituloEsc»</strong> en formato EPUB.";
 
     $html = <<<HTML
 <h1 style="margin:0 0 8px;font-size:22px;line-height:1.25;">¡Gracias por tu compra!</h1>
-<p style="margin:0 0 22px;color:rgba(14,11,22,0.65);font-size:15px;">Aquí tienes <strong>«$tituloEsc»</strong> en formato EPUB.</p>
+<p style="margin:0 0 22px;color:rgba(14,11,22,0.65);font-size:15px;">$intro</p>
 <p style="margin:0 0 24px;text-align:center;">
   <a href="$url" style="display:inline-block;background:linear-gradient(135deg,#E8A33D,#F5C983);color:#fff;font-weight:800;font-size:16px;padding:14px 28px;border-radius:12px;text-decoration:none;">Descargar el libro (EPUB)</a>
 </p>
@@ -150,11 +219,11 @@ function correo_entrega(array $p): bool
 </p>
 HTML;
 
-    $texto = "¡Gracias por tu compra!\n\nAquí tienes «{$libro['titulo']}» en formato EPUB.\n\nDescarga: $url\n(válido $dias días, hasta $max descargas · pedido $pedidoCorto)\n\n"
+    $texto = "¡Gracias por tu compra!\n\n" . ($adjuntos ? "Te adjuntamos" : "Aquí tienes") . " «{$libro['titulo']}» en formato EPUB.\n\nDescarga: $url\n(válido $dias días, hasta $max descargas · pedido $pedidoCorto)\n\n"
         . "Cómo leerlo:\n1) Celular o tablet: Apple Libros o Google Play Libros.\n2) Kindle: amazon.com/sendtokindle y sube el EPUB.\n3) Computador: Calibre, Thorium Reader o Microsoft Edge.\n\n"
         . "¿Problemas? WhatsApp +57 323 510 9187 indicando el pedido $pedidoCorto.\n";
 
-    return correo_enviar((string) $p['email'], 'Tu libro: ' . $libro['titulo'] . ' (EPUB)', correo_plantilla('Tu libro', $html), $texto);
+    return correo_enviar((string) $p['email'], 'Tu libro: ' . $libro['titulo'] . ' (EPUB)', correo_plantilla('Tu libro', $html), $texto, null, $adjuntos);
 }
 
 /** Aviso al vendedor de cada venta (correo.copia_a). */
