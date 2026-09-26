@@ -41,7 +41,6 @@ function mp_crear_preferencia(array $pedido): array
             'currency_id' => $pedido['moneda'],
             'unit_price' => (float) $pedido['monto'],
         ]],
-        'payer' => ['email' => $pedido['email']],
         'external_reference' => $id,
         'back_urls' => [
             'success' => "$sitio/gracias?pedido=$id",
@@ -52,6 +51,15 @@ function mp_crear_preferencia(array $pedido): array
         'binary_mode' => false, // permite PSE / efectivo (quedan "pendiente" hasta que se aprueban)
         'metadata' => ['pedido_id' => $id, 'pais' => $pedido['pais']],
     ];
+    // Pagador sugerido. En producción, el correo del comprador. En sandbox, NUNCA el correo real
+    // (MP lo asocia a la cuenta real y ofrece pagar con ella): se usa el comprador de prueba si está
+    // configurado; si no, no se envía y MP pide iniciar sesión.
+    if (en_produccion()) {
+        $cuerpo['payer'] = ['email' => $pedido['email']];
+    } elseif ($prueba = (string) cfg('mercadopago.email_comprador_prueba', '')) {
+        $cuerpo['payer'] = ['email' => $prueba];
+    }
+
     // Mercado Pago rechaza auto_return y notification_url si el sitio no es HTTPS público
     // (p. ej. pruebas en http://127.0.0.1). En local el comprador vuelve con «Volver al sitio».
     if (str_starts_with($sitio, 'https://')) {

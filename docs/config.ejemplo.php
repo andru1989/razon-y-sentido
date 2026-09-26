@@ -18,6 +18,9 @@ return [
         'access_token' => 'APP_USR-xxxxxxxxxxxxxxxx-xxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxx',
         // Tu aplicación → Webhooks → Clave secreta (opcional pero recomendado).
         'webhook_secret' => '',
+        // Solo sandbox: correo del usuario comprador de prueba (test_user_…@testuser.com).
+        // Así el checkout no te ofrece pagar con tu cuenta real. En producción se ignora.
+        'email_comprador_prueba' => '',
     ],
 
     'paypal' => [
