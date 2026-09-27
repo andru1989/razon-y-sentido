@@ -79,7 +79,9 @@ function pp_crear_orden(array $pedido): array
         'payment_source' => ['paypal' => ['experience_context' => [
             'brand_name' => 'Razón y Sentido',
             'locale' => 'es-ES',
-            'landing_page' => 'NO_PREFERENCE',
+            // Formulario de tarjeta de entrada: quien no tiene PayPal paga sin crear cuenta;
+            // quien sí la tiene usa «Iniciar sesión» en la misma página.
+            'landing_page' => 'GUEST_CHECKOUT',
             'shipping_preference' => 'NO_SHIPPING',
             'user_action' => 'PAY_NOW',
             'payment_method_preference' => 'IMMEDIATE_PAYMENT_REQUIRED',
