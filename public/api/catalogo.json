@@ -1,5 +1,5 @@
 {
-  "_comentario": "Fuente única de verdad para precios y pasarelas. La lee Astro (para pintar la landing) y PHP (para cobrar). Cambiar un precio aquí y hacer push a main basta. Los países con PayPal están inactivos hasta configurar sus credenciales.",
+  "_comentario": "Fuente única de verdad para precios y pasarelas. La lee Astro (para pintar la landing) y PHP (para cobrar). Cambiar un precio aquí y hacer push a main basta.",
   "libro": {
     "isbn": "9791387717483",
     "isbn_ebook": "9791387716752",
@@ -33,7 +33,7 @@
       "nombre": "México",
       "bandera": "🇲🇽",
       "directo": {
-        "activo": false,
+        "activo": true,
         "proveedor": "paypal",
         "moneda": "USD",
         "precio": 7.99,
@@ -45,7 +45,7 @@
       "nombre": "España",
       "bandera": "🇪🇸",
       "directo": {
-        "activo": false,
+        "activo": true,
         "proveedor": "paypal",
         "moneda": "EUR",
         "precio": 6,
@@ -57,7 +57,7 @@
       "nombre": "Argentina",
       "bandera": "🇦🇷",
       "directo": {
-        "activo": false,
+        "activo": true,
         "proveedor": "paypal",
         "moneda": "USD",
         "precio": 7.99,
@@ -69,7 +69,7 @@
       "nombre": "Otros países",
       "bandera": "🌎",
       "directo": {
-        "activo": false,
+        "activo": true,
         "proveedor": "paypal",
         "moneda": "USD",
         "precio": 7.99,
