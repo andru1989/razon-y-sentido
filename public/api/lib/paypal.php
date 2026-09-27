@@ -117,8 +117,9 @@ function pp_obtener_orden(string $ordenId): ?array
 /** Captura una orden aprobada. Si ya estaba capturada, devuelve la orden actual. */
 function pp_capturar_orden(string $ordenId): ?array
 {
-    $r = http_json('POST', pp_base() . '/v2/checkout/orders/' . rawurlencode($ordenId) . '/capture', [],
-        pp_cabeceras(['PayPal-Request-Id: cap-' . $ordenId, 'Prefer: return=representation']));
+    // Cuerpo vacío como objeto JSON "{}": json_encode([]) daría "[]" y PayPal lo rechaza (MALFORMED_REQUEST_JSON).
+    $r = http_json('POST', pp_base() . '/v2/checkout/orders/' . rawurlencode($ordenId) . '/capture', null,
+        pp_cabeceras(['Content-Type: application/json', 'PayPal-Request-Id: cap-' . $ordenId, 'Prefer: return=representation']), null, '{}');
     if (in_array($r['status'], [200, 201], true) && $r['json']) {
         return $r['json'];
     }
