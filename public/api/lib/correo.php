@@ -279,11 +279,23 @@ HTML;
     return correo_enviar((string) $p['email'], 'Tu libro: ' . $libro['titulo'] . ' (EPUB)', correo_plantilla('Tu libro', $html), $texto, null, $adjuntos);
 }
 
-/** Aviso al vendedor de cada venta (correo.copia_a). */
+/**
+ * Destinatarios del aviso de venta: correo.copia_a admite un correo, una lista
+ * ['a@x.com', 'b@y.com'] o un texto separado por comas.
+ */
+function correo_destinatarios_aviso(): array
+{
+    $valor = cfg('correo.copia_a', []);
+    $lista = is_array($valor) ? $valor : explode(',', (string) $valor);
+    $lista = array_map(fn($c) => strtolower(trim((string) $c)), $lista);
+    return array_values(array_unique(array_filter($lista, fn($c) => filter_var($c, FILTER_VALIDATE_EMAIL))));
+}
+
+/** Aviso al vendedor de cada venta: un correo por destinatario. True si llegó a alguno. */
 function correo_aviso_venta(array $p): bool
 {
-    $copia = (string) cfg('correo.copia_a', '');
-    if ($copia === '') {
+    $destinatarios = correo_destinatarios_aviso();
+    if (!$destinatarios) {
         return false;
     }
     $monto = number_format((float) $p['monto'], $p['moneda'] === 'COP' ? 0 : 2, ',', '.');
@@ -297,5 +309,15 @@ function correo_aviso_venta(array $p): bool
 <tr><td style=\"color:rgba(14,11,22,0.5);padding-right:16px;\">Pedido</td><td style=\"font-family:monospace;\">{$p['id']}</td></tr>
 </table>";
     $texto = "Nueva venta del EPUB\nImporte: $monto {$p['moneda']}\nPaís: {$p['pais']}\nPasarela: {$p['proveedor']} ({$p['pago_ref']})\nComprador: {$p['email']}\nPedido: {$p['id']}\n";
-    return correo_enviar($copia, "Venta EPUB · $monto {$p['moneda']} · " . strtoupper((string) $p['pais']), correo_plantilla('Nueva venta', $html), $texto);
+    $asunto = "Venta EPUB · $monto {$p['moneda']} · " . strtoupper((string) $p['pais']);
+    $cuerpoHtml = correo_plantilla('Nueva venta', $html);
+    $alguno = false;
+    foreach ($destinatarios as $para) {
+        if (correo_enviar($para, $asunto, $cuerpoHtml, $texto)) {
+            $alguno = true;
+        } else {
+            registrar('correo', "aviso de venta no enviado a $para", ['pedido' => $p['id']]);
+        }
+    }
+    return $alguno;
 }

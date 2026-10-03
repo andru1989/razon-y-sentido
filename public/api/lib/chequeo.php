@@ -98,9 +98,11 @@ function chequeo_lanzamiento(): array
     } else {
         $r[] = ['aviso', "Correo por mail() de PHP", 'Si el remitente no es del servidor, puede llegar a spam. Recomendado: SMTP del buzón del dominio.'];
     }
-    $r[] = cfg('correo.copia_a')
-        ? ['ok', 'Aviso de cada venta', 'Se envía a ' . cfg('correo.copia_a')]
-        : ['aviso', 'Sin aviso de ventas', 'Pon un correo en correo.copia_a para enterarte de cada venta.'];
+    require_once __DIR__ . '/correo.php';
+    $avisos = correo_destinatarios_aviso();
+    $r[] = $avisos
+        ? ['ok', 'Aviso de cada venta', 'Se envía a ' . implode(' y ', $avisos)]
+        : ['aviso', 'Sin aviso de ventas', 'Pon uno o varios correos en correo.copia_a para enterarte de cada venta.'];
 
     return $r;
 }

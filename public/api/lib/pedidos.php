@@ -144,7 +144,7 @@ function pedido_entregar(array $p): void
             registrar('correo', 'fallo entrega ' . $p['id'] . ': ' . $e->getMessage());
         }
     }
-    if (!$p['aviso_enviado_en'] && cfg('correo.copia_a')) {
+    if (!$p['aviso_enviado_en'] && cfg('correo.copia_a')) { // uno o varios correos (ver correo_destinatarios_aviso)
         try {
             if (correo_aviso_venta($p)) {
                 pedido_actualizar($p['id'], ['aviso_enviado_en' => ahora()]);

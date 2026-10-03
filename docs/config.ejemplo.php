@@ -35,8 +35,8 @@ return [
         'remitente' => 'contacto@razonysentido.com',
         'nombre' => 'Razón y Sentido',
         'responder_a' => 'contacto@razonysentido.com',
-        // Aviso de cada venta al vendedor (vacío = no enviar).
-        'copia_a' => '',
+        // Aviso de cada venta: uno o varios correos (vacío = no enviar).
+        'copia_a' => ['contacto@razonysentido.com', 'razonysentidoconsultoria@gmail.com'],
         // 'mail' (sendmail de Hostinger, sin configurar nada), 'smtp' (buzón del dominio; mejor entregabilidad)
         // o 'archivo' (pruebas locales: no envía, guarda el correo en private/correos/ y se ve en el panel).
         'transporte' => 'mail',
