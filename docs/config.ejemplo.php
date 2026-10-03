@@ -32,9 +32,9 @@ return [
     ],
 
     'correo' => [
-        'remitente' => 'libro@razonysentido.com',
+        'remitente' => 'contacto@razonysentido.com',
         'nombre' => 'Razón y Sentido',
-        'responder_a' => 'libro@razonysentido.com',
+        'responder_a' => 'contacto@razonysentido.com',
         // Aviso de cada venta al vendedor (vacío = no enviar).
         'copia_a' => '',
         // 'mail' (sendmail de Hostinger, sin configurar nada), 'smtp' (buzón del dominio; mejor entregabilidad)
@@ -42,12 +42,12 @@ return [
         'transporte' => 'mail',
         // El EPUB va adjunto si pesa hasta estos MB (Gmail admite ~25 MB; base64 añade un 33 %). 0 = solo enlace.
         'adjunto_max_mb' => 10,
-        // razonysentido.com tiene el correo en HostGator: se envía por SU servidor para que el SPF
-        // del dominio lo autorice (enviar desde Hostinger con ese remitente acabaría en spam).
+        // razonysentido.com tiene el correo en Titan (HostGator): se envía por SU servidor para que el
+        // SPF/DKIM del dominio lo autoricen (enviar desde Hostinger con ese remitente acabaría en spam).
         'smtp' => [
-            'host' => 'mail.razonysentido.com',
+            'host' => 'smtp.titan.email',
             'puerto' => 465,
-            'usuario' => 'libro@razonysentido.com',
+            'usuario' => 'contacto@razonysentido.com',
             'clave' => '',
         ],
     ],

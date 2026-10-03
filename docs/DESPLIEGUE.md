@@ -97,7 +97,7 @@ El servidor ya tiene `~/domains/tiempo.razonysentido.com/private/config.php` en 
 1. **Mercado Pago (cuenta que recibe el dinero):** *Tus integraciones* → la aplicación → **Credenciales de producción** (hay que activarlas indicando sector y la web `https://tiempo.razonysentido.com`). El Access Token va en `mercadopago.access_token`.
 2. **Webhook de producción:** *Webhooks* → modo productivo → URL `https://tiempo.razonysentido.com/api/webhook-mercadopago.php`, evento **Pagos** → la clave secreta va en `mercadopago.webhook_secret`.
 3. **EPUB definitivo** → `private/libro.epub`.
-4. **Correo:** el dominio tiene el correo en HostGator. Crear (o usar) un buzón, p. ej. `libro@razonysentido.com`, y poner usuario y contraseña en `correo.smtp` (host `mail.razonysentido.com`, puerto 465). `correo.copia_a` = correo que recibe el aviso de cada venta.
+4. **Correo:** el dominio tiene el correo en **Titan** (HostGator). Buzón `contacto@razonysentido.com` en `correo.smtp` (host `smtp.titan.email`, puerto 465). En Titan debe estar permitido el acceso de aplicaciones externas (IMAP/SMTP). `correo.copia_a` = correo que recibe el aviso de cada venta.
 5. Panel → **Ejecutar chequeo de lanzamiento**: todo en ✅.
 6. Fusionar `astro-pagos` en `main` y hacer push. En 1–2 minutos el sitio está publicado (pestaña *Actions* de GitHub).
 7. Hacer **una compra real** de Colombia con importe normal y reembolsarla desde Mercado Pago si se desea.
