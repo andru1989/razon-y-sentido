@@ -19,6 +19,9 @@ define('RYS_API_DIR', dirname(__DIR__));
 // Todo lo que el backend crea (logs, base de datos, caché de tokens, correos) solo lo lee el propio usuario.
 umask(0077);
 header_remove('X-Powered-By');
+// Ningún endpoint espera listas en la URL o el formulario (?t[]=x): se descartan antes de leerlas.
+$_GET = array_filter($_GET, 'is_scalar');
+$_POST = array_filter($_POST, 'is_scalar');
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
