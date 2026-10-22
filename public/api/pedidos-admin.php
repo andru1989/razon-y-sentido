@@ -53,7 +53,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['accion'] ?? '') ==
         $monto,
         $moneda,
         (string) ($_POST['medio'] ?? ''),
-        (string) ($_POST['referencia'] ?? ''),
+        '',
         (string) ($_POST['whatsapp'] ?? '')
     );
     if (is_array($res)) {
@@ -86,6 +86,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         // Solo sandbox: marca pagado sin pasar por la pasarela para probar /gracias y el correo.
         pedido_marcar_pagado($id, ['pago_ref' => 'SIMULADO-' . strtoupper(substr(uuid4(), 0, 8)), 'estado_detalle' => 'simulado_sandbox']);
         $mensaje = 'Pago simulado. Abre la página de gracias del pedido para ver la descarga.';
+    } elseif ($p && $accion === 'eliminar') {
+        // Un pedido pendiente reciente puede pagarse todavía (PSE, efectivo): borrarlo dejaría
+        // al comprador sin libro cuando llegue el pago. Se protege durante 48 horas.
+        if ($p['estado'] === 'pendiente' && strtotime((string) $p['creado_en']) > time() - 48 * 3600) {
+            $mensaje = 'Este pedido está pendiente y tiene menos de 48 horas: todavía puede pagarse. Podrás eliminarlo pasado ese tiempo.';
+        } else {
+            db()->prepare('DELETE FROM pedidos WHERE id = ?')->execute([$id]);
+            registrar('pedidos', 'eliminado desde el panel ' . $id, ['estado' => $p['estado'], 'proveedor' => $p['proveedor'], 'monto' => $p['monto'], 'moneda' => $p['moneda'], 'email' => $p['email'], 'pago_ref' => $p['pago_ref']]);
+            $mensaje = 'Registro ' . strtoupper(substr($id, 0, 8)) . ' eliminado.' . ($p['estado'] === 'pagado' ? ' Su enlace de descarga ya no funciona.' : '');
+        }
     } elseif ($p && $accion === 'renovar' && $p['estado'] === 'pagado') {
         $dias = (int) (catalogo()['descarga']['dias_validez'] ?? 30);
         pedido_actualizar($id, ['descargas' => 0, 'expira_en' => gmdate('Y-m-d\TH:i:s\Z', time() + $dias * 86400)]);
@@ -94,7 +104,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 }
 
 $filas = db()->query('SELECT * FROM pedidos ORDER BY creado_en DESC LIMIT 200')->fetchAll();
-$totales = db()->query("SELECT estado, COUNT(*) n, SUM(CASE WHEN estado='pagado' THEN monto ELSE 0 END) suma, moneda FROM pedidos GROUP BY estado, moneda")->fetchAll();
+// Un recuadro por estado; solo las ventas pagadas se separan por moneda (para sumar importes).
+$totales = db()->query("SELECT estado, COUNT(*) n, SUM(monto) suma, CASE WHEN estado='pagado' THEN moneda ELSE '' END moneda FROM pedidos GROUP BY estado, CASE WHEN estado='pagado' THEN moneda ELSE '' END ORDER BY CASE estado WHEN 'pagado' THEN 0 WHEN 'pendiente' THEN 1 WHEN 'fallido' THEN 2 ELSE 3 END")->fetchAll();
 $e = fn($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 $claveEsc = $e($clave);
 $modo = en_produccion() ? 'PRODUCCIÓN' : 'sandbox';
@@ -109,7 +120,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;ove
 th,td{padding:9px 10px;border-bottom:1px solid #F0EDE6;text-align:left;vertical-align:top}th{background:#0E0B16;color:#fff;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
 .est{display:inline-block;padding:2px 8px;border-radius:999px;font-weight:700;font-size:11px}
 .pagado{background:rgba(46,124,153,.12);color:#2E7C99}.pendiente{background:rgba(232,163,61,.16);color:#C7822A}.fallido{background:rgba(217,83,79,.12);color:#B03A2E}.reembolsado{background:#EEE;color:#555}
-form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer;margin:2px 2px 0 0}button.sec{background:#2E7C99}
+form{display:inline}form.caja{display:block}button.borrar{background:#B03A2E}button{border:0;background:#0E0B16;color:#fff;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer;margin:2px 2px 0 0}button.sec{background:#2E7C99}
 .mono{font-family:ui-monospace,Menlo,monospace;font-size:11px}.wrap{overflow-x:auto}
 .caja{background:#fff;border:1px solid rgba(232,163,61,.35);border-radius:14px;padding:16px;margin-bottom:16px;max-width:760px}
 .caja h2{font-size:16px;margin:0 0 4px}.caja .sub{margin-bottom:12px}
@@ -123,7 +134,7 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 .err{color:#B03A2E;font-size:13px;font-weight:600;margin:0 0 10px}
 </style></head><body>
 <h1>Pedidos del EPUB <span style="font-size:12px;color:#C7822A;">· modo <?= $modo ?></span></h1>
-<p class="sub">Últimos 200 pedidos. «Comprobar» vuelve a preguntar a la pasarela; «Reenviar» manda otra vez el correo de descarga; «Renovar» reinicia el enlace.</p>
+<p class="sub">Últimos 200 pedidos. «Comprobar» vuelve a preguntar a la pasarela; «Reenviar» manda otra vez el correo de descarga; «Renovar» reinicia el enlace; «Eliminar» borra el registro.</p>
 <?php if ($mensaje): ?><div class="msg"><?= $e($mensaje) ?></div><?php endif; ?>
 
 <?php if ($entregado):
@@ -159,7 +170,6 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
   <div class="campos">
     <label>WhatsApp del comprador *<input type="tel" name="whatsapp" required inputmode="tel" autofocus placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
     <label>Medio de pago *<select name="medio" required><?php foreach (MEDIOS_MANUALES as $m): ?><option<?= ($_POST['medio'] ?? '') === $m ? ' selected' : '' ?>><?= $e($m) ?></option><?php endforeach; ?></select></label>
-    <label>Referencia o nota (opcional)<input type="text" name="referencia" maxlength="80" placeholder="Nº de comprobante, nombre…" value="<?= $e($_POST['referencia'] ?? '') ?>"></label>
     <label>Importe recibido (COP) *<input type="text" name="monto" required inputmode="decimal" value="<?= $e($_POST['monto'] ?? '25.000') ?>"></label>
     <input type="hidden" name="moneda" value="COP">
     <input type="hidden" name="pais" value="co">
@@ -202,6 +212,9 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <?php if ($f['email'] !== ''): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="reenviar"><button class="sec">Reenviar correo</button></form><?php endif; ?>
 <form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="renovar"><button class="sec">Renovar enlace</button></form>
 <?php endif; ?>
+<form method="post" onsubmit="return confirm(<?= $e(json_encode($f['estado'] === 'pagado'
+    ? '¿Eliminar esta VENTA PAGADA? Desaparece del panel y de los totales, y el enlace de descarga del comprador deja de funcionar. No se puede deshacer.'
+    : '¿Eliminar este registro? No se puede deshacer.', JSON_UNESCAPED_UNICODE)) ?>)"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="eliminar"><button class="borrar">Eliminar</button></form>
 </td>
 </tr>
 <?php endforeach; ?>
