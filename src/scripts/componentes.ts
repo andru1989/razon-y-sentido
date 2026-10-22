@@ -252,7 +252,10 @@ export function registrarComponentes(Alpine: AlpineType) {
 
         if (data.estado === 'pagado') {
           this.estado = 'pagado';
-          trackCompra({ id: data.id, pais: data.pais, proveedor: data.proveedor, monto: data.monto, moneda: data.moneda });
+          // Las ventas por pago directo (registradas a mano) no se reportan como compra a Meta/GA4.
+          if (data.proveedor !== 'manual') {
+            trackCompra({ id: data.id, pais: data.pais, proveedor: data.proveedor, monto: data.monto, moneda: data.moneda });
+          }
           return;
         }
         if (data.estado === 'fallido' || data.estado === 'reembolsado') { this.estado = 'fallido'; return; }

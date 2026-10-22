@@ -37,6 +37,37 @@ if (isset($_GET['correo'])) {
 }
 
 $mensaje = '';
+$errorManual = '';
+// Venta por pago directo (transferencia, Nequi…): se registra, se entrega y se redirige
+// (POST → GET) para que recargar la página no cree la venta dos veces.
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['accion'] ?? '') === 'manual') {
+    $moneda = (string) ($_POST['moneda'] ?? 'COP');
+    $montoTxt = trim((string) ($_POST['monto'] ?? ''));
+    // COP sin decimales ("25.000" o "25000"); USD/EUR con decimales ("7.99" o "7,99").
+    $monto = $moneda === 'COP'
+        ? (float) preg_replace('/\D/', '', $montoTxt)
+        : (float) str_replace([',', ' '], ['.', ''], $montoTxt);
+    $res = pedido_entrega_manual(
+        (string) ($_POST['email'] ?? ''),
+        (string) ($_POST['pais'] ?? 'co'),
+        $monto,
+        $moneda,
+        (string) ($_POST['medio'] ?? ''),
+        (string) ($_POST['referencia'] ?? '')
+    );
+    if (is_array($res)) {
+        $tel = preg_replace('/\D/', '', (string) ($_POST['whatsapp'] ?? '')) ?? '';
+        header('Location: ?clave=' . rawurlencode($clave) . '&entregado=' . rawurlencode($res['id']) . ($tel !== '' ? '&tel=' . $tel : ''), true, 303);
+        exit;
+    }
+    $errorManual = $res;
+}
+$entregado = null;
+if (isset($_GET['entregado']) && es_uuid((string) $_GET['entregado'])) {
+    $x = pedido_obtener((string) $_GET['entregado']);
+    $entregado = ($x && $x['proveedor'] === 'manual') ? $x : null;
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $id = (string) ($_POST['id'] ?? '');
     $accion = (string) ($_POST['accion'] ?? '');
@@ -80,10 +111,56 @@ th,td{padding:9px 10px;border-bottom:1px solid #F0EDE6;text-align:left;vertical-
 .pagado{background:rgba(46,124,153,.12);color:#2E7C99}.pendiente{background:rgba(232,163,61,.16);color:#C7822A}.fallido{background:rgba(217,83,79,.12);color:#B03A2E}.reembolsado{background:#EEE;color:#555}
 form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer;margin:2px 2px 0 0}button.sec{background:#2E7C99}
 .mono{font-family:ui-monospace,Menlo,monospace;font-size:11px}.wrap{overflow-x:auto}
+.caja{background:#fff;border:1px solid rgba(232,163,61,.35);border-radius:14px;padding:16px;margin-bottom:16px;max-width:760px}
+.caja h2{font-size:16px;margin:0 0 4px}.caja .sub{margin-bottom:12px}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.campos label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:rgba(14,11,22,.7)}
+.campos input,.campos select{font:inherit;font-size:14px;font-weight:400;padding:9px 10px;border:1.5px solid #E5E1D8;border-radius:9px;background:#FFFDF9;color:#0E0B16}
+.btn{border:0;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#E8A33D,#F5C983)}
+.btn.wa{background:#25D366}.btn.sec{background:#2E7C99}
+.listo{background:rgba(46,124,153,.07);border-color:rgba(46,124,153,.4)}
+.enlace{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.enlace input{flex:1;min-width:220px;font:inherit;font-size:13px;padding:9px 10px;border:1.5px solid #E5E1D8;border-radius:9px;background:#fff}
+.err{color:#B03A2E;font-size:13px;font-weight:600;margin:0 0 10px}
 </style></head><body>
 <h1>Pedidos del EPUB <span style="font-size:12px;color:#C7822A;">· modo <?= $modo ?></span></h1>
 <p class="sub">Últimos 200 pedidos. «Comprobar» vuelve a preguntar a la pasarela; «Reenviar» manda otra vez el correo de descarga; «Renovar» reinicia el enlace.</p>
 <?php if ($mensaje): ?><div class="msg"><?= $e($mensaje) ?></div><?php endif; ?>
+
+<?php if ($entregado):
+    $enlace = url_gracias($entregado);
+    $textoWa = "¡Hola! Gracias por tu compra de «" . catalogo()['libro']['titulo'] . "». Aquí puedes descargar tu libro digital (EPUB): $enlace\nTambién te lo enviamos al correo " . $entregado['email'] . ". Cualquier duda, me escribes.";
+    $tel = preg_replace('/\D/', '', (string) ($_GET['tel'] ?? '')) ?? '';
+    if ($tel !== '' && strlen($tel) === 10 && $tel[0] === '3') { $tel = '57' . $tel; } // celular colombiano sin indicativo
+    $urlWa = 'https://wa.me/' . $tel . '?text=' . rawurlencode($textoWa); ?>
+<div class="caja listo">
+  <h2>✅ Venta registrada y libro entregado</h2>
+  <p class="sub" style="margin-bottom:6px;">Se envió el libro a <strong><?= $e($entregado['email']) ?></strong><?= $entregado['correo_enviado_en'] ? '' : ' <span class="err">(el correo no salió: usa «Reenviar correo» abajo)</span>' ?>. Comparte este enlace con el comprador:</p>
+  <div class="enlace">
+    <input id="enlace-entrega" type="text" readonly value="<?= $e($enlace) ?>" onclick="this.select()">
+    <button class="btn sec" type="button" onclick="navigator.clipboard.writeText(document.getElementById('enlace-entrega').value).then(()=>{this.textContent='¡Copiado!'})">Copiar enlace</button>
+    <a class="btn wa" href="<?= $e($urlWa) ?>" target="_blank" rel="noopener" style="text-decoration:none;">Enviar por WhatsApp</a>
+  </div>
+  <p class="sub" style="margin:0;">Pedido <span class="mono"><?= $e(strtoupper(substr($entregado['id'], 0, 8))) ?></span> · válido <?= (int) (catalogo()['descarga']['dias_validez'] ?? 30) ?> días · hasta <?= (int) (catalogo()['descarga']['descargas_max'] ?? 5) ?> descargas.</p>
+</div>
+<?php endif; ?>
+
+<form method="post" class="caja" autocomplete="off">
+  <h2>Entrega por pago directo</h2>
+  <p class="sub">Para ventas cobradas fuera del sitio (transferencia, Nequi, Daviplata, efectivo). <strong>Confirma primero que el dinero llegó a tu cuenta.</strong> Se envía el libro al correo y obtienes un enlace para compartir.</p>
+  <?php if ($errorManual): ?><p class="err"><?= $e($errorManual) ?></p><?php endif; ?>
+  <input type="hidden" name="clave" value="<?= $claveEsc ?>">
+  <input type="hidden" name="accion" value="manual">
+  <div class="campos">
+    <label>Correo del comprador *<input type="email" name="email" required placeholder="comprador@correo.com" value="<?= $e($_POST['email'] ?? '') ?>"></label>
+    <label>WhatsApp del comprador (opcional)<input type="tel" name="whatsapp" placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
+    <label>Medio de pago *<select name="medio" required><?php foreach (MEDIOS_MANUALES as $m): ?><option<?= ($_POST['medio'] ?? '') === $m ? ' selected' : '' ?>><?= $e($m) ?></option><?php endforeach; ?></select></label>
+    <label>Referencia o nota (opcional)<input type="text" name="referencia" maxlength="80" placeholder="Nº de comprobante, nombre…" value="<?= $e($_POST['referencia'] ?? '') ?>"></label>
+    <label>Importe recibido *<input type="text" name="monto" required inputmode="decimal" value="<?= $e($_POST['monto'] ?? '25.000') ?>"></label>
+    <label>Moneda<select name="moneda"><?php foreach (['COP', 'USD', 'EUR'] as $mo): ?><option<?= ($_POST['moneda'] ?? 'COP') === $mo ? ' selected' : '' ?>><?= $mo ?></option><?php endforeach; ?></select></label>
+    <label>País del comprador<select name="pais"><?php foreach (catalogo()['paises'] as $cod => $pa): ?><option value="<?= $e($cod) ?>"<?= ($_POST['pais'] ?? 'co') === $cod ? ' selected' : '' ?>><?= $e($pa['nombre']) ?></option><?php endforeach; ?></select></label>
+  </div>
+  <p style="margin:12px 0 0;"><button class="btn" type="submit" onclick="return confirm('¿Confirmas que el pago llegó a tu cuenta? Se enviará el libro al comprador.')">Entregar libro</button></p>
+</form>
 <?php if (isset($_GET['chequeo'])):
     require_once __DIR__ . '/lib/chequeo.php';
     $puntos = chequeo_lanzamiento();

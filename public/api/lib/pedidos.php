@@ -126,6 +126,45 @@ function pedido_marcar_pagado(string $id, array $info = []): ?array
     return pedido_obtener($id);
 }
 
+/** Medios aceptados para las ventas registradas a mano desde el panel. */
+const MEDIOS_MANUALES = ['Transferencia Bancolombia', 'Nequi', 'Daviplata', 'Otra transferencia', 'Efectivo', 'Otro'];
+
+/**
+ * Venta cobrada fuera del sitio (transferencia, Nequi…) que Luis registra desde el panel:
+ * crea el pedido, lo marca pagado y entrega el libro (correo + enlace de descarga).
+ * Devuelve el pedido o un texto de error.
+ */
+function pedido_entrega_manual(string $email, string $pais, float $monto, string $moneda, string $medio, string $referencia): array|string
+{
+    $email = strtolower(trim($email));
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
+        return 'El correo del comprador no es válido.';
+    }
+    if (!isset(catalogo()['paises'][$pais])) {
+        return 'País no válido.';
+    }
+    if (!in_array($moneda, ['COP', 'USD', 'EUR'], true) || $monto <= 0 || $monto > 10000000) {
+        return 'Importe o moneda no válidos.';
+    }
+    if (!in_array($medio, MEDIOS_MANUALES, true)) {
+        return 'Medio de pago no válido.';
+    }
+    $referencia = trim(preg_replace('/\s+/', ' ', $referencia) ?? '');
+    $p = pedido_crear([
+        'pais' => $pais, 'proveedor' => 'manual', 'moneda' => $moneda, 'monto' => $monto,
+        'email' => $email, 'ip' => ip_cliente(), 'user_agent' => 'panel', 'origen' => 'panel',
+    ]);
+    $ref = mb_substr($medio . ($referencia !== '' ? ' · ' . $referencia : ''), 0, 120);
+    registrar('pedidos', 'venta manual ' . $p['id'], ['medio' => $medio, 'monto' => $monto, 'moneda' => $moneda]);
+    return pedido_marcar_pagado($p['id'], ['pago_ref' => $ref, 'estado_detalle' => 'manual']) ?? 'No se pudo registrar la venta.';
+}
+
+/** URL personal de la página de gracias de un pedido (la que se comparte con el comprador). */
+function url_gracias(array $p): string
+{
+    return url_sitio() . '/gracias?pedido=' . rawurlencode((string) $p['id']);
+}
+
 /** Correo al comprador, aviso al vendedor y Purchase por Conversions API (cada uno una sola vez). */
 function pedido_entregar(array $p): void
 {
@@ -153,7 +192,8 @@ function pedido_entregar(array $p): void
             registrar('correo', 'fallo aviso ' . $p['id'] . ': ' . $e->getMessage());
         }
     }
-    if (!$p['capi_enviado_en']) {
+    // Las ventas manuales no vienen de un anuncio ni del checkout: no se reportan a Meta.
+    if (!$p['capi_enviado_en'] && $p['proveedor'] !== 'manual') {
         try {
             if (capi_purchase($p)) {
                 pedido_actualizar($p['id'], ['capi_enviado_en' => ahora()]);
@@ -196,7 +236,7 @@ function pedido_publico(array $p): array
 /** Vuelve a preguntar a la pasarela por un pedido que no esté pagado. */
 function pedido_conciliar(array $p, array $pistas = []): array
 {
-    if ($p['estado'] === 'pagado' || $p['estado'] === 'reembolsado') {
+    if ($p['estado'] === 'pagado' || $p['estado'] === 'reembolsado' || $p['proveedor'] === 'manual') {
         return $p;
     }
     try {
