@@ -57,8 +57,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['accion'] ?? '') ==
         (string) ($_POST['whatsapp'] ?? '')
     );
     if (is_array($res)) {
-        $tel = preg_replace('/\D/', '', (string) ($_POST['whatsapp'] ?? '')) ?? '';
-        header('Location: ?clave=' . rawurlencode($clave) . '&entregado=' . rawurlencode($res['id']) . ($tel !== '' ? '&tel=' . $tel : ''), true, 303);
+        header('Location: ?clave=' . rawurlencode($clave) . '&entregado=' . rawurlencode($res['id']), true, 303);
         exit;
     }
     $errorManual = $res;
@@ -132,16 +131,20 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
     $textoWa = "¡Hola! Gracias por tu compra de «" . catalogo()['libro']['titulo'] . "». Ya confirmé tu pago. Aquí puedes descargar tu libro digital (EPUB):\n$enlace\n"
         . ($entregado['email'] !== '' ? "También te lo envié a tu correo " . $entregado['email'] . ".\n" : '')
         . "El enlace es personal: funciona " . (int) (catalogo()['descarga']['dias_validez'] ?? 30) . " días. Cualquier duda, me escribes.";
-    $tel = preg_replace('/\D/', '', (string) ($_GET['tel'] ?? '')) ?? '';
-    if ($tel !== '' && strlen($tel) === 10 && $tel[0] === '3') { $tel = '57' . $tel; } // celular colombiano sin indicativo
+    // wa.me/<número> abre directamente el chat de ese número (app en el celular, WhatsApp Web en el computador).
+    $tel = whatsapp_de_pedido($entregado);
     $urlWa = 'https://wa.me/' . $tel . '?text=' . rawurlencode($textoWa); ?>
 <div class="caja listo">
   <h2>✅ Venta registrada: enlace listo</h2>
-  <p class="sub" style="margin-bottom:6px;"><?php if ($entregado['email'] !== ''): ?>También se envió el libro a <strong><?= $e($entregado['email']) ?></strong><?= $entregado['correo_enviado_en'] ? '' : ' <span class="err">(el correo no salió: usa «Reenviar correo» abajo)</span>' ?>. <?php endif; ?>Comparte este enlace con el comprador:</p>
+  <?php if ($tel !== ''): ?>
+  <p style="margin:6px 0 10px;"><a class="btn wa" href="<?= $e($urlWa) ?>" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;font-size:16px;padding:14px 20px;">Enviar enlace por WhatsApp a +<?= $e($tel) ?></a></p>
+  <p class="sub" style="margin-bottom:6px;">Se abre el chat de esa persona con el mensaje y el enlace listos: solo pulsa enviar. Si prefieres, copia el enlace:</p>
+  <?php else: ?>
+  <p class="sub" style="margin-bottom:6px;">Comparte este enlace con el comprador:</p>
+  <?php endif; ?>
   <div class="enlace">
     <input id="enlace-entrega" type="text" readonly value="<?= $e($enlace) ?>" onclick="this.select()">
     <button class="btn sec" type="button" onclick="navigator.clipboard.writeText(document.getElementById('enlace-entrega').value).then(()=>{this.textContent='¡Copiado!'})">Copiar enlace</button>
-    <a class="btn wa" href="<?= $e($urlWa) ?>" target="_blank" rel="noopener" style="text-decoration:none;">Enviar por WhatsApp</a>
   </div>
   <p class="sub" style="margin:0;">Pedido <span class="mono"><?= $e(strtoupper(substr($entregado['id'], 0, 8))) ?></span> · válido <?= (int) (catalogo()['descarga']['dias_validez'] ?? 30) ?> días · hasta <?= (int) (catalogo()['descarga']['descargas_max'] ?? 5) ?> descargas.</p>
 </div>
@@ -154,13 +157,12 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
   <input type="hidden" name="clave" value="<?= $claveEsc ?>">
   <input type="hidden" name="accion" value="manual">
   <div class="campos">
-    <label>WhatsApp del comprador<input type="tel" name="whatsapp" inputmode="tel" placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
-    <label>Correo (opcional: también le llega el libro)<input type="email" name="email" placeholder="comprador@correo.com" value="<?= $e($_POST['email'] ?? '') ?>"></label>
+    <label>WhatsApp del comprador *<input type="tel" name="whatsapp" required inputmode="tel" autofocus placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
     <label>Medio de pago *<select name="medio" required><?php foreach (MEDIOS_MANUALES as $m): ?><option<?= ($_POST['medio'] ?? '') === $m ? ' selected' : '' ?>><?= $e($m) ?></option><?php endforeach; ?></select></label>
     <label>Referencia o nota (opcional)<input type="text" name="referencia" maxlength="80" placeholder="Nº de comprobante, nombre…" value="<?= $e($_POST['referencia'] ?? '') ?>"></label>
-    <label>Importe recibido *<input type="text" name="monto" required inputmode="decimal" value="<?= $e($_POST['monto'] ?? '25.000') ?>"></label>
-    <label>Moneda<select name="moneda"><?php foreach (['COP', 'USD', 'EUR'] as $mo): ?><option<?= ($_POST['moneda'] ?? 'COP') === $mo ? ' selected' : '' ?>><?= $mo ?></option><?php endforeach; ?></select></label>
-    <label>País del comprador<select name="pais"><?php foreach (catalogo()['paises'] as $cod => $pa): ?><option value="<?= $e($cod) ?>"<?= ($_POST['pais'] ?? 'co') === $cod ? ' selected' : '' ?>><?= $e($pa['nombre']) ?></option><?php endforeach; ?></select></label>
+    <label>Importe recibido (COP) *<input type="text" name="monto" required inputmode="decimal" value="<?= $e($_POST['monto'] ?? '25.000') ?>"></label>
+    <input type="hidden" name="moneda" value="COP">
+    <input type="hidden" name="pais" value="co">
   </div>
   <p style="margin:12px 0 0;"><button class="btn" type="submit" onclick="return confirm('¿Verificaste en tu app de Bancolombia que el dinero llegó?')">Generar enlace de descarga</button></p>
 </form>

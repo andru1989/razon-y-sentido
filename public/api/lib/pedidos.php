@@ -141,9 +141,9 @@ function pedido_entrega_manual(string $email, string $pais, float $monto, string
     if ($email !== '' && (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190)) {
         return 'El correo del comprador no es válido (o déjalo vacío).';
     }
-    $whatsapp = preg_replace('/\D/', '', $whatsapp) ?? '';
-    if ($whatsapp !== '' && (strlen($whatsapp) < 7 || strlen($whatsapp) > 15)) {
-        return 'El WhatsApp del comprador no parece un número válido.';
+    $whatsapp = whatsapp_normalizar($whatsapp);
+    if ($whatsapp === '') {
+        return 'Escribe el WhatsApp del comprador (por ejemplo 300 123 4567, o con indicativo +52… si es de otro país).';
     }
     if (!isset(catalogo()['paises'][$pais])) {
         return 'País no válido.';
@@ -162,6 +162,28 @@ function pedido_entrega_manual(string $email, string $pais, float $monto, string
     $ref = mb_substr($medio . ($whatsapp !== '' ? ' · WA ' . $whatsapp : '') . ($referencia !== '' ? ' · ' . $referencia : ''), 0, 120);
     registrar('pedidos', 'venta manual ' . $p['id'], ['medio' => $medio, 'monto' => $monto, 'moneda' => $moneda]);
     return pedido_marcar_pagado($p['id'], ['pago_ref' => $ref, 'estado_detalle' => 'manual']) ?? 'No se pudo registrar la venta.';
+}
+
+/**
+ * Número en formato internacional sin "+" (el que exige wa.me), o '' si no es válido.
+ * Un número colombiano de 10 dígitos (300 123 4567) recibe el indicativo 57.
+ */
+function whatsapp_normalizar(string $numero): string
+{
+    $d = preg_replace('/\D/', '', $numero) ?? '';
+    if (str_starts_with($d, '00')) {
+        $d = substr($d, 2); // 0057… → 57…
+    }
+    if (strlen($d) === 10 && $d[0] === '3') {
+        $d = '57' . $d;
+    }
+    return (strlen($d) >= 11 && strlen($d) <= 15) ? $d : '';
+}
+
+/** WhatsApp guardado en una venta manual (va en pago_ref como «WA 573001234567»). */
+function whatsapp_de_pedido(array $p): string
+{
+    return preg_match('/\bWA (\d{11,15})\b/', (string) $p['pago_ref'], $m) ? $m[1] : '';
 }
 
 /** URL personal de la página de gracias de un pedido (la que se comparte con el comprador). */
