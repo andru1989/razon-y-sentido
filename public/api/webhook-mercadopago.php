@@ -1,11 +1,11 @@
 <?php
 /**
- * Webhook de Mercado Pago (tema "payment").
- * Configurar en el panel de desarrolladores de Mercado Pago:
- *   URL:     https://tiempo.razonysentido.com/api/webhook-mercadopago.php
- *   Eventos: Pagos
- *   Clave secreta → private/config.php (mercadopago.webhook_secret)
- * Siempre re-consulta el pago a la API: el cuerpo del aviso no se usa para decidir nada.
+ * Avisos de Mercado Pago (tema "payment"). Llegan de dos formas:
+ *   - Webhooks del panel (?data.id=…&type=payment, con cabecera x-signature): se verifica la firma
+ *     con mercadopago.webhook_secret y, si no cuadra, se rechazan (401).
+ *   - IPN de la notification_url de cada preferencia (?topic=payment&id=…): Mercado Pago NO los firma.
+ *     Se aceptan porque el aviso solo dice "mira el pago X": el estado SIEMPRE se lee de la API con
+ *     nuestro Access Token, así que un aviso falso no puede marcar nada como pagado.
  */
 declare(strict_types=1);
 require_once __DIR__ . '/lib/bootstrap.php';
@@ -27,17 +27,18 @@ if ($tipo !== 'payment' || $dataId === '') {
     exit('ignorado');
 }
 
-if (!mp_firma_valida($dataId)) {
+$firmado = isset(cabeceras_entrada()['x-signature']);
+if ($firmado && !mp_firma_valida($dataId)) {
     registrar('mercadopago', 'firma inválida', ['data_id' => $dataId]);
     http_response_code(401);
     exit('firma inválida');
 }
-
-// Deduplicación: misma notificación (id de pago + acción) solo se procesa una vez.
-$eventoId = $dataId . ':' . ($accion ?: 'payment') . ':' . (string) ($cuerpo['id'] ?? '');
-if (!webhook_registrar('mercadopago', $eventoId, $tipo, (string) ($_GET['pedido'] ?? ''), $crudo)) {
+if (!$firmado) {
+    registrar('mercadopago', 'aviso IPN sin firma: se verifica consultando la API', ['data_id' => $dataId]);
+}
+if (!ctype_digit($dataId)) {
     http_response_code(200);
-    exit('duplicado');
+    exit('ignorado');
 }
 
 $pago = mp_obtener_pago($dataId);
@@ -46,6 +47,14 @@ if (!$pago) {
     registrar('mercadopago', "no se pudo leer el pago $dataId");
     http_response_code(200);
     exit('pago no disponible');
+}
+
+// Deduplicación por (pago + estado real): el mismo pago se procesa otra vez cuando CAMBIA de estado
+// (pendiente → aprobado → reembolsado), pero no por cada reintento del mismo aviso.
+$eventoId = $dataId . ':' . (string) ($pago['status'] ?? '') . ':' . (string) ($pago['status_detail'] ?? '');
+if (!webhook_registrar('mercadopago', $eventoId, $tipo, (string) ($_GET['pedido'] ?? ''), $crudo)) {
+    http_response_code(200);
+    exit('duplicado');
 }
 
 mp_aplicar_pago($pago);
