@@ -299,7 +299,7 @@ function correo_aviso_venta(array $p): bool
         return false;
     }
     $monto = number_format((float) $p['monto'], $p['moneda'] === 'COP' ? 0 : 2, ',', '.');
-    $email = htmlspecialchars((string) $p['email'], ENT_QUOTES, 'UTF-8');
+    $email = htmlspecialchars((string) $p['email'] !== '' ? (string) $p['email'] : 'sin correo (entrega por enlace)', ENT_QUOTES, 'UTF-8');
     $html = "<h1 style=\"margin:0 0 12px;font-size:20px;\">Nueva venta del EPUB</h1>
 <table style=\"font-size:14px;line-height:1.7;\">
 <tr><td style=\"color:rgba(14,11,22,0.5);padding-right:16px;\">Importe</td><td><strong>$monto {$p['moneda']}</strong></td></tr>

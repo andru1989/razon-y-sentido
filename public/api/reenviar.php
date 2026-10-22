@@ -21,6 +21,9 @@ if (!$p) {
 if ($p['estado'] !== 'pagado') {
     json_error('El pago aún no está confirmado.', 409);
 }
+if ($p['email'] === '') {
+    json_error('Esta compra no tiene correo asociado. Descarga el libro con el botón de esta página.', 409);
+}
 
 $st = db()->prepare("SELECT COUNT(*) AS n, MAX(recibido_en) AS ultimo FROM eventos_webhook WHERE proveedor = 'reenvio' AND pedido_id = ?");
 $st->execute([$id]);

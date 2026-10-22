@@ -47,8 +47,8 @@ import { SITIO, LIBRO } from '../data/libro';
             </p>
           </div>
 
-          <!-- Estado del correo + reenvío -->
-          <div class="mt-6 rounded-xl p-4 flex items-start gap-3" style="background:rgba(46,124,153,0.06); border:1px solid rgba(46,124,153,0.22);">
+          <!-- Estado del correo + reenvío (no aparece en ventas entregadas solo por enlace, sin correo) -->
+          <div x-show="pedido.email" class="mt-6 rounded-xl p-4 flex items-start gap-3" style="background:rgba(46,124,153,0.06); border:1px solid rgba(46,124,153,0.22);">
             <svg class="flex-shrink-0 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
             <div class="flex-1 min-w-0 text-sm" style="color:rgba(14,11,22,0.75);">
               <p x-show="pedido.correo_enviado">También te enviamos el libro a <strong class="break-all" x-text="pedido.email"></strong>. Si no lo ves en unos minutos, revisa spam o promociones.</p>

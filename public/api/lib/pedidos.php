@@ -127,18 +127,23 @@ function pedido_marcar_pagado(string $id, array $info = []): ?array
 }
 
 /** Medios aceptados para las ventas registradas a mano desde el panel. */
-const MEDIOS_MANUALES = ['Transferencia Bancolombia', 'Nequi', 'Daviplata', 'Otra transferencia', 'Efectivo', 'Otro'];
+const MEDIOS_MANUALES = ['QR Bancolombia', 'Transferencia Bancolombia', 'Nequi', 'Daviplata', 'Otra transferencia', 'Efectivo', 'Otro'];
 
 /**
- * Venta cobrada fuera del sitio (transferencia, Nequi…) que Luis registra desde el panel:
- * crea el pedido, lo marca pagado y entrega el libro (correo + enlace de descarga).
+ * Venta cobrada fuera del sitio (QR Bancolombia, transferencia, Nequi…) que Luis registra desde
+ * el panel tras verificar el pago en su banco: crea el pedido, lo marca pagado y genera el enlace
+ * de descarga. El correo es opcional: si viene, también se envía el libro por correo.
  * Devuelve el pedido o un texto de error.
  */
-function pedido_entrega_manual(string $email, string $pais, float $monto, string $moneda, string $medio, string $referencia): array|string
+function pedido_entrega_manual(string $email, string $pais, float $monto, string $moneda, string $medio, string $referencia, string $whatsapp = ''): array|string
 {
     $email = strtolower(trim($email));
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
-        return 'El correo del comprador no es válido.';
+    if ($email !== '' && (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190)) {
+        return 'El correo del comprador no es válido (o déjalo vacío).';
+    }
+    $whatsapp = preg_replace('/\D/', '', $whatsapp) ?? '';
+    if ($whatsapp !== '' && (strlen($whatsapp) < 7 || strlen($whatsapp) > 15)) {
+        return 'El WhatsApp del comprador no parece un número válido.';
     }
     if (!isset(catalogo()['paises'][$pais])) {
         return 'País no válido.';
@@ -154,7 +159,7 @@ function pedido_entrega_manual(string $email, string $pais, float $monto, string
         'pais' => $pais, 'proveedor' => 'manual', 'moneda' => $moneda, 'monto' => $monto,
         'email' => $email, 'ip' => ip_cliente(), 'user_agent' => 'panel', 'origen' => 'panel',
     ]);
-    $ref = mb_substr($medio . ($referencia !== '' ? ' · ' . $referencia : ''), 0, 120);
+    $ref = mb_substr($medio . ($whatsapp !== '' ? ' · WA ' . $whatsapp : '') . ($referencia !== '' ? ' · ' . $referencia : ''), 0, 120);
     registrar('pedidos', 'venta manual ' . $p['id'], ['medio' => $medio, 'monto' => $monto, 'moneda' => $moneda]);
     return pedido_marcar_pagado($p['id'], ['pago_ref' => $ref, 'estado_detalle' => 'manual']) ?? 'No se pudo registrar la venta.';
 }
@@ -174,7 +179,8 @@ function pedido_entregar(array $p): void
     require_once __DIR__ . '/correo.php';
     require_once __DIR__ . '/meta_capi.php';
 
-    if (!$p['correo_enviado_en']) {
+    // Sin correo (venta manual entregada solo por enlace) no hay nada que enviar al comprador.
+    if (!$p['correo_enviado_en'] && $p['email'] !== '') {
         try {
             if (correo_entrega($p)) {
                 pedido_actualizar($p['id'], ['correo_enviado_en' => ahora()]);

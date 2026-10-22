@@ -53,7 +53,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['accion'] ?? '') ==
         $monto,
         $moneda,
         (string) ($_POST['medio'] ?? ''),
-        (string) ($_POST['referencia'] ?? '')
+        (string) ($_POST['referencia'] ?? ''),
+        (string) ($_POST['whatsapp'] ?? '')
     );
     if (is_array($res)) {
         $tel = preg_replace('/\D/', '', (string) ($_POST['whatsapp'] ?? '')) ?? '';
@@ -128,13 +129,15 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 
 <?php if ($entregado):
     $enlace = url_gracias($entregado);
-    $textoWa = "¡Hola! Gracias por tu compra de «" . catalogo()['libro']['titulo'] . "». Aquí puedes descargar tu libro digital (EPUB): $enlace\nTambién te lo enviamos al correo " . $entregado['email'] . ". Cualquier duda, me escribes.";
+    $textoWa = "¡Hola! Gracias por tu compra de «" . catalogo()['libro']['titulo'] . "». Ya confirmé tu pago. Aquí puedes descargar tu libro digital (EPUB):\n$enlace\n"
+        . ($entregado['email'] !== '' ? "También te lo envié a tu correo " . $entregado['email'] . ".\n" : '')
+        . "El enlace es personal: funciona " . (int) (catalogo()['descarga']['dias_validez'] ?? 30) . " días. Cualquier duda, me escribes.";
     $tel = preg_replace('/\D/', '', (string) ($_GET['tel'] ?? '')) ?? '';
     if ($tel !== '' && strlen($tel) === 10 && $tel[0] === '3') { $tel = '57' . $tel; } // celular colombiano sin indicativo
     $urlWa = 'https://wa.me/' . $tel . '?text=' . rawurlencode($textoWa); ?>
 <div class="caja listo">
-  <h2>✅ Venta registrada y libro entregado</h2>
-  <p class="sub" style="margin-bottom:6px;">Se envió el libro a <strong><?= $e($entregado['email']) ?></strong><?= $entregado['correo_enviado_en'] ? '' : ' <span class="err">(el correo no salió: usa «Reenviar correo» abajo)</span>' ?>. Comparte este enlace con el comprador:</p>
+  <h2>✅ Venta registrada: enlace listo</h2>
+  <p class="sub" style="margin-bottom:6px;"><?php if ($entregado['email'] !== ''): ?>También se envió el libro a <strong><?= $e($entregado['email']) ?></strong><?= $entregado['correo_enviado_en'] ? '' : ' <span class="err">(el correo no salió: usa «Reenviar correo» abajo)</span>' ?>. <?php endif; ?>Comparte este enlace con el comprador:</p>
   <div class="enlace">
     <input id="enlace-entrega" type="text" readonly value="<?= $e($enlace) ?>" onclick="this.select()">
     <button class="btn sec" type="button" onclick="navigator.clipboard.writeText(document.getElementById('enlace-entrega').value).then(()=>{this.textContent='¡Copiado!'})">Copiar enlace</button>
@@ -145,21 +148,21 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <?php endif; ?>
 
 <form method="post" class="caja" autocomplete="off">
-  <h2>Entrega por pago directo</h2>
-  <p class="sub">Para ventas cobradas fuera del sitio (transferencia, Nequi, Daviplata, efectivo). <strong>Confirma primero que el dinero llegó a tu cuenta.</strong> Se envía el libro al correo y obtienes un enlace para compartir.</p>
+  <h2>Entrega por pago directo (QR / transferencia)</h2>
+  <p class="sub"><strong>1.</strong> Verifica en tu app de Bancolombia que el dinero llegó (un pantallazo del comprobante no basta: pueden ser editados). <strong>2.</strong> Genera el enlace y envíalo por WhatsApp.</p>
   <?php if ($errorManual): ?><p class="err"><?= $e($errorManual) ?></p><?php endif; ?>
   <input type="hidden" name="clave" value="<?= $claveEsc ?>">
   <input type="hidden" name="accion" value="manual">
   <div class="campos">
-    <label>Correo del comprador *<input type="email" name="email" required placeholder="comprador@correo.com" value="<?= $e($_POST['email'] ?? '') ?>"></label>
-    <label>WhatsApp del comprador (opcional)<input type="tel" name="whatsapp" placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
+    <label>WhatsApp del comprador<input type="tel" name="whatsapp" inputmode="tel" placeholder="300 123 4567" value="<?= $e($_POST['whatsapp'] ?? '') ?>"></label>
+    <label>Correo (opcional: también le llega el libro)<input type="email" name="email" placeholder="comprador@correo.com" value="<?= $e($_POST['email'] ?? '') ?>"></label>
     <label>Medio de pago *<select name="medio" required><?php foreach (MEDIOS_MANUALES as $m): ?><option<?= ($_POST['medio'] ?? '') === $m ? ' selected' : '' ?>><?= $e($m) ?></option><?php endforeach; ?></select></label>
     <label>Referencia o nota (opcional)<input type="text" name="referencia" maxlength="80" placeholder="Nº de comprobante, nombre…" value="<?= $e($_POST['referencia'] ?? '') ?>"></label>
     <label>Importe recibido *<input type="text" name="monto" required inputmode="decimal" value="<?= $e($_POST['monto'] ?? '25.000') ?>"></label>
     <label>Moneda<select name="moneda"><?php foreach (['COP', 'USD', 'EUR'] as $mo): ?><option<?= ($_POST['moneda'] ?? 'COP') === $mo ? ' selected' : '' ?>><?= $mo ?></option><?php endforeach; ?></select></label>
     <label>País del comprador<select name="pais"><?php foreach (catalogo()['paises'] as $cod => $pa): ?><option value="<?= $e($cod) ?>"<?= ($_POST['pais'] ?? 'co') === $cod ? ' selected' : '' ?>><?= $e($pa['nombre']) ?></option><?php endforeach; ?></select></label>
   </div>
-  <p style="margin:12px 0 0;"><button class="btn" type="submit" onclick="return confirm('¿Confirmas que el pago llegó a tu cuenta? Se enviará el libro al comprador.')">Entregar libro</button></p>
+  <p style="margin:12px 0 0;"><button class="btn" type="submit" onclick="return confirm('¿Verificaste en tu app de Bancolombia que el dinero llegó?')">Generar enlace de descarga</button></p>
 </form>
 <?php if (isset($_GET['chequeo'])):
     require_once __DIR__ . '/lib/chequeo.php';
@@ -186,14 +189,15 @@ form{display:inline}button{border:0;background:#0E0B16;color:#fff;border-radius:
 <td><span class="est <?= $e($f['estado']) ?>"><?= $e($f['estado']) ?></span><?php if ($f['estado_detalle']): ?><br><span class="mono"><?= $e($f['estado_detalle']) ?></span><?php endif; ?></td>
 <td><?= $e(strtoupper($f['pais'])) ?></td>
 <td><?= number_format((float) $f['monto'], $f['moneda'] === 'COP' ? 0 : 2, ',', '.') ?> <?= $e($f['moneda']) ?></td>
-<td><?= $e($f['email']) ?><?php if ($f['email_pagador'] && $f['email_pagador'] !== $f['email']): ?><br><span class="mono">pagó: <?= $e($f['email_pagador']) ?></span><?php endif; ?></td>
+<td><?= $f['email'] !== '' ? $e($f['email']) : '<span class="mono">(sin correo)</span>' ?><?php if ($f['email_pagador'] && $f['email_pagador'] !== $f['email']): ?><br><span class="mono">pagó: <?= $e($f['email_pagador']) ?></span><?php endif; ?></td>
 <td><?= $e($f['proveedor']) ?><br><span class="mono"><?= $e($f['pago_ref'] ?: $f['proveedor_ref']) ?></span></td>
 <td><?= (int) $f['descargas'] ?><?php if ($f['expira_en']): ?><br><span class="mono">hasta <?= $e(substr((string) $f['expira_en'], 0, 10)) ?></span><?php endif; ?></td>
 <td>
 <?php if ($f['estado'] !== 'pagado'): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="comprobar"><button>Comprobar</button></form><?php endif; ?>
 <?php if ($f['estado'] !== 'pagado' && !en_produccion()): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="simular"><button style="background:#C7822A;">Simular pago aprobado</button></form><?php endif; ?>
 <?php if ($f['estado'] === 'pagado'): ?>
-<form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="reenviar"><button class="sec">Reenviar correo</button></form>
+<a class="mono" href="?clave=<?= $claveEsc ?>&amp;entregado=<?= $e($f['id']) ?>" style="color:#2E7C99;font-weight:700;"><?= $f['proveedor'] === 'manual' ? 'Ver enlace' : '' ?></a>
+<?php if ($f['email'] !== ''): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="reenviar"><button class="sec">Reenviar correo</button></form><?php endif; ?>
 <form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="renovar"><button class="sec">Renovar enlace</button></form>
 <?php endif; ?>
 </td>
