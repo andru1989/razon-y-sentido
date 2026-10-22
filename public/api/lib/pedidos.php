@@ -96,13 +96,12 @@ function pedido_marcar_pagado(string $id, array $info = []): ?array
             return null;
         }
         if ($p['estado'] !== 'pagado') {
-            $dias = (int) (catalogo()['descarga']['dias_validez'] ?? 30);
             $campos = [
                 'estado' => 'pagado',
                 'estado_detalle' => $info['estado_detalle'] ?? 'approved',
                 'pagado_en' => ahora(),
                 'token_descarga' => $p['token_descarga'] ?: bin2hex(random_bytes(24)),
-                'expira_en' => gmdate('Y-m-d\TH:i:s\Z', time() + $dias * 86400),
+                'expira_en' => vencimiento_descarga($p),
             ];
             if (!empty($info['pago_ref'])) {
                 $campos['pago_ref'] = (string) $info['pago_ref'];
@@ -124,6 +123,37 @@ function pedido_marcar_pagado(string $id, array $info = []): ?array
     $p = pedido_obtener($id);
     pedido_entregar($p);
     return pedido_obtener($id);
+}
+
+const ZONA_LOCAL = 'America/Bogota';
+
+/** Último segundo del mes en curso, hora de Colombia, expresado en UTC («2026-11-01T04:59:59Z»). */
+function fin_de_mes_utc(): string
+{
+    $fin = new DateTimeImmutable('last day of this month 23:59:59', new DateTimeZone(ZONA_LOCAL));
+    return $fin->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z');
+}
+
+/**
+ * Hasta cuándo funciona el enlace de descarga de un pedido recién pagado (o renovado):
+ * ventas por pago directo (QR, transferencia) → hasta fin de mes; ventas en línea → N días.
+ */
+function vencimiento_descarga(array $p): string
+{
+    if (($p['proveedor'] ?? '') === 'manual') {
+        return fin_de_mes_utc();
+    }
+    $dias = (int) (catalogo()['descarga']['dias_validez'] ?? 30);
+    return gmdate('Y-m-d\TH:i:s\Z', time() + $dias * 86400);
+}
+
+/** Fecha UTC guardada → «31/10/2026» en hora de Colombia. */
+function fecha_local(?string $utc): string
+{
+    if (!$utc) {
+        return '';
+    }
+    return (new DateTimeImmutable($utc))->setTimezone(new DateTimeZone(ZONA_LOCAL))->format('d/m/Y');
 }
 
 /** Medios aceptados para las ventas registradas a mano desde el panel. */
@@ -184,6 +214,15 @@ function whatsapp_normalizar(string $numero): string
 function whatsapp_de_pedido(array $p): string
 {
     return preg_match('/\bWA (\d{11,15})\b/', (string) $p['pago_ref'], $m) ? $m[1] : '';
+}
+
+/** «573196787454» → «+57 319 678 7454» (otros países: «+52 5512345678»). */
+function whatsapp_legible(string $numero): string
+{
+    if (strlen($numero) === 12 && str_starts_with($numero, '57')) {
+        return '+57 ' . substr($numero, 2, 3) . ' ' . substr($numero, 5, 3) . ' ' . substr($numero, 8);
+    }
+    return '+' . substr($numero, 0, 2) . ' ' . substr($numero, 2);
 }
 
 /** URL personal de la página de gracias de un pedido (la que se comparte con el comprador). */
@@ -256,6 +295,7 @@ function pedido_publico(array $p): array
         $salida['correo_enviado'] = (bool) $p['correo_enviado_en'];
         $salida['descarga_url'] = url_descarga($p);
         $salida['dias_validez'] = (int) ($cat['descarga']['dias_validez'] ?? 30);
+        $salida['valido_hasta'] = fecha_local($p['expira_en']);
         $salida['descargas_max'] = (int) ($cat['descarga']['descargas_max'] ?? 5);
     }
     return $salida;

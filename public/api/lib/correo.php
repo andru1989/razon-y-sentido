@@ -244,7 +244,7 @@ function correo_entrega(array $p): bool
     $cat = catalogo();
     $libro = $cat['libro'];
     $url = url_descarga($p);
-    $dias = (int) ($cat['descarga']['dias_validez'] ?? 30);
+    $hasta = fecha_local($p['expira_en'] ?? null) ?: ((int) ($cat['descarga']['dias_validez'] ?? 30)) . ' días';
     $max = (int) ($cat['descarga']['descargas_max'] ?? 5);
     $pedidoCorto = strtoupper(substr($p['id'], 0, 8));
     $wa = 'https://wa.me/573235109187';
@@ -260,7 +260,7 @@ function correo_entrega(array $p): bool
 <p style="margin:0 0 24px;text-align:center;">
   <a href="$url" style="display:inline-block;background:linear-gradient(135deg,#E8A33D,#F5C983);color:#fff;font-weight:800;font-size:16px;padding:14px 28px;border-radius:12px;text-decoration:none;">Descargar el libro (EPUB)</a>
 </p>
-<p style="margin:0 0 20px;font-size:12px;color:rgba(14,11,22,0.5);text-align:center;">Enlace válido $dias días · hasta $max descargas · Pedido $pedidoCorto</p>
+<p style="margin:0 0 20px;font-size:12px;color:rgba(14,11,22,0.5);text-align:center;">Enlace válido hasta el $hasta · hasta $max descargas · Pedido $pedidoCorto</p>
 <h2 style="margin:24px 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#C7822A;">Cómo leerlo</h2>
 <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.6;color:rgba(14,11,22,0.75);">
   <li><strong>Celular o tablet:</strong> abre el archivo con Apple Libros (iPhone/iPad) o Google Play Libros (Android).</li>
@@ -272,7 +272,7 @@ function correo_entrega(array $p): bool
 </p>
 HTML;
 
-    $texto = "¡Gracias por tu compra!\n\n" . ($adjuntos ? "Te adjuntamos" : "Aquí tienes") . " «{$libro['titulo']}» en formato EPUB.\n\nDescarga: $url\n(válido $dias días, hasta $max descargas · pedido $pedidoCorto)\n\n"
+    $texto = "¡Gracias por tu compra!\n\n" . ($adjuntos ? "Te adjuntamos" : "Aquí tienes") . " «{$libro['titulo']}» en formato EPUB.\n\nDescarga: $url\n(válido hasta el $hasta, hasta $max descargas · pedido $pedidoCorto)\n\n"
         . "Cómo leerlo:\n1) Celular o tablet: Apple Libros o Google Play Libros.\n2) Kindle: amazon.com/sendtokindle y sube el EPUB.\n3) Computador: Calibre, Thorium Reader o Microsoft Edge.\n\n"
         . "¿Problemas? WhatsApp +57 323 510 9187 indicando el pedido $pedidoCorto.\n";
 

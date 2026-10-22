@@ -215,7 +215,7 @@ export function registrarComponentes(Alpine: AlpineType) {
   interface Pedido {
     id: string; id_corto: string; estado: 'pendiente' | 'pagado' | 'fallido' | 'reembolsado';
     pais: string; proveedor: string; moneda: string; monto: number; email: string;
-    descarga_url?: string; dias_validez?: number; descargas_max?: number; correo_enviado?: boolean;
+    descarga_url?: string; dias_validez?: number; valido_hasta?: string; descargas_max?: number; correo_enviado?: boolean;
   }
 
   Alpine.data('gracias', () => ({

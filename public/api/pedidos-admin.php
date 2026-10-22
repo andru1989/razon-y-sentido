@@ -97,9 +97,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $mensaje = 'Registro ' . strtoupper(substr($id, 0, 8)) . ' eliminado.' . ($p['estado'] === 'pagado' ? ' Su enlace de descarga ya no funciona.' : '');
         }
     } elseif ($p && $accion === 'renovar' && $p['estado'] === 'pagado') {
-        $dias = (int) (catalogo()['descarga']['dias_validez'] ?? 30);
-        pedido_actualizar($id, ['descargas' => 0, 'expira_en' => gmdate('Y-m-d\TH:i:s\Z', time() + $dias * 86400)]);
-        $mensaje = 'Enlace renovado: contador a 0 y ' . $dias . ' días más.';
+        $vence = vencimiento_descarga($p);
+        pedido_actualizar($id, ['descargas' => 0, 'expira_en' => $vence]);
+        $mensaje = 'Enlace renovado: contador de descargas a 0 y válido hasta el ' . fecha_local($vence) . '.';
     }
 }
 
@@ -141,14 +141,14 @@ form{display:inline}form.caja{display:block}button.borrar{background:#B03A2E}but
     $enlace = url_gracias($entregado);
     $textoWa = "¡Hola! Gracias por tu compra de «" . catalogo()['libro']['titulo'] . "». Ya confirmé tu pago. Aquí puedes descargar tu libro digital (EPUB):\n$enlace\n"
         . ($entregado['email'] !== '' ? "También te lo envié a tu correo " . $entregado['email'] . ".\n" : '')
-        . "El enlace es personal: funciona " . (int) (catalogo()['descarga']['dias_validez'] ?? 30) . " días. Cualquier duda, me escribes.";
+        . "El enlace es personal y funciona hasta el " . fecha_local($entregado['expira_en']) . ". Cualquier duda, me escribes.";
     // wa.me/<número> abre directamente el chat de ese número (app en el celular, WhatsApp Web en el computador).
     $tel = whatsapp_de_pedido($entregado);
     $urlWa = 'https://wa.me/' . $tel . '?text=' . rawurlencode($textoWa); ?>
 <div class="caja listo">
   <h2>✅ Venta registrada: enlace listo</h2>
   <?php if ($tel !== ''): ?>
-  <p style="margin:6px 0 10px;"><a class="btn wa" href="<?= $e($urlWa) ?>" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;font-size:16px;padding:14px 20px;">Enviar enlace por WhatsApp a +<?= $e($tel) ?></a></p>
+  <p style="margin:6px 0 10px;"><a class="btn wa" href="<?= $e($urlWa) ?>" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;font-size:16px;padding:14px 20px;">Enviar enlace por WhatsApp a <?= $e(whatsapp_legible($tel)) ?></a></p>
   <p class="sub" style="margin-bottom:6px;">Se abre el chat de esa persona con el mensaje y el enlace listos: solo pulsa enviar. Si prefieres, copia el enlace:</p>
   <?php else: ?>
   <p class="sub" style="margin-bottom:6px;">Comparte este enlace con el comprador:</p>
@@ -157,7 +157,7 @@ form{display:inline}form.caja{display:block}button.borrar{background:#B03A2E}but
     <input id="enlace-entrega" type="text" readonly value="<?= $e($enlace) ?>" onclick="this.select()">
     <button class="btn sec" type="button" onclick="navigator.clipboard.writeText(document.getElementById('enlace-entrega').value).then(()=>{this.textContent='¡Copiado!'})">Copiar enlace</button>
   </div>
-  <p class="sub" style="margin:0;">Pedido <span class="mono"><?= $e(strtoupper(substr($entregado['id'], 0, 8))) ?></span> · válido <?= (int) (catalogo()['descarga']['dias_validez'] ?? 30) ?> días · hasta <?= (int) (catalogo()['descarga']['descargas_max'] ?? 5) ?> descargas.</p>
+  <p class="sub" style="margin:0;">Pedido <span class="mono"><?= $e(strtoupper(substr($entregado['id'], 0, 8))) ?></span> · válido hasta el <strong><?= $e(fecha_local($entregado['expira_en'])) ?></strong> · hasta <?= (int) (catalogo()['descarga']['descargas_max'] ?? 5) ?> descargas.</p>
 </div>
 <?php endif; ?>
 
@@ -201,8 +201,8 @@ form{display:inline}form.caja{display:block}button.borrar{background:#B03A2E}but
 <td><span class="est <?= $e($f['estado']) ?>"><?= $e($f['estado']) ?></span><?php if ($f['estado_detalle']): ?><br><span class="mono"><?= $e($f['estado_detalle']) ?></span><?php endif; ?></td>
 <td><?= $e(strtoupper($f['pais'])) ?></td>
 <td><?= number_format((float) $f['monto'], $f['moneda'] === 'COP' ? 0 : 2, ',', '.') ?> <?= $e($f['moneda']) ?></td>
-<td><?= $f['email'] !== '' ? $e($f['email']) : '<span class="mono">(sin correo)</span>' ?><?php if ($f['email_pagador'] && $f['email_pagador'] !== $f['email']): ?><br><span class="mono">pagó: <?= $e($f['email_pagador']) ?></span><?php endif; ?></td>
-<td><?= $e($f['proveedor']) ?><br><span class="mono"><?= $e($f['pago_ref'] ?: $f['proveedor_ref']) ?></span></td>
+<td><?php $wa = whatsapp_de_pedido($f); ?><?php if ($f['email'] !== ''): ?><?= $e($f['email']) ?><?php if ($wa !== ''): ?><br><?php endif; ?><?php endif; ?><?php if ($wa !== ''): ?><a href="https://wa.me/<?= $e($wa) ?>" target="_blank" rel="noopener" style="color:#128C7E;font-weight:700;text-decoration:none;white-space:nowrap;">WhatsApp <?= $e(whatsapp_legible($wa)) ?></a><?php elseif ($f['email'] === ''): ?><span class="mono">(sin datos de contacto)</span><?php endif; ?><?php if ($f['email_pagador'] && $f['email_pagador'] !== $f['email']): ?><br><span class="mono">pagó: <?= $e($f['email_pagador']) ?></span><?php endif; ?></td>
+<td><?= $e($f['proveedor']) ?><br><span class="mono"><?= $e(trim(preg_replace('/\s*·\s*WA \d+/', '', (string) ($f['pago_ref'] ?: $f['proveedor_ref'])) ?? '')) ?></span></td>
 <td><?= (int) $f['descargas'] ?><?php if ($f['expira_en']): ?><br><span class="mono">hasta <?= $e(substr((string) $f['expira_en'], 0, 10)) ?></span><?php endif; ?></td>
 <td>
 <?php if ($f['estado'] !== 'pagado'): ?><form method="post"><input type="hidden" name="clave" value="<?= $claveEsc ?>"><input type="hidden" name="id" value="<?= $e($f['id']) ?>"><input type="hidden" name="accion" value="comprobar"><button>Comprobar</button></form><?php endif; ?>
